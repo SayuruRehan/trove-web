@@ -90,12 +90,10 @@ export default function Footer() {
               >
                 <path d="M12.378 1.602a.75.75 0 00-.756 0L3 6.632l9 5.25 9-5.25-8.622-5.03zM21.75 7.93l-9 5.25v9l8.628-5.032a.75.75 0 00.372-.648V7.93zM11.25 22.18v-9l-9-5.25v8.57a.75.75 0 00.372.648l8.628 5.033z" />
               </svg>
-              Waves Enterprise
+              Trove
             </h6>
             <p>
-              Easily manage orders, users, and products. Access real-time data
-              and streamline your workflow to keep your business running
-              smoothly. All the tools you need, just a click away.
+              Effortlessly manage orders, users, and products. Access real-time insights and optimize your workflow to ensure seamless business operations. All the essential tools you need are just a click away.
             </p>
           </div>
           {/* <!-- Products section --> */}
@@ -161,7 +159,7 @@ export default function Footer() {
                 <path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z" />
                 <path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z" />
               </svg>
-              wavesenterprise@example.com
+              trove@example.com
             </p>
             <p className="mb-4 flex items-center justify-center md:justify-start">
               <svg
@@ -204,7 +202,7 @@ export default function Footer() {
           className="font-semibold text-neutral-600 dark:text-neutral-400"
           href="#"
         >
-          Waves Enterprise
+          Trove
         </a>
       </div>
     </footer>
