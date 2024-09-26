@@ -150,7 +150,7 @@ export default function Order() {
                           onOrderUpdated={handleOrderUpdated}
                       />
                       <button
-                          className="btn btn-danger btn-sm"
+                          className="text-red-600 hover:text-red-800 transition m-2"
                           onClick={() => deleteOrder(order.orderId)}
                       >
                         <FontAwesomeIcon icon={faTrash}/>
