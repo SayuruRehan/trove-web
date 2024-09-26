@@ -18,6 +18,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons"; // Import FontAwesome icons
 import {Link} from "react-router-dom";
 import Footer from "../../components/Footer";
+import LoadingSpinner from "../../components/ui/loading-chip";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -167,8 +168,9 @@ const Products = () => {
     <>
       <Header />
       <div className="ml-10 mr-10 mb-10">
-        <div className="flex justify-center">
-          <h2>Products List</h2>
+            <div className="d-flex justify-content-between align-items-center mb-4">
+              <h2>Product List</h2>
+
         </div>
         <Link to="/create-product" className="d-flex justify-content-end mb-3">
           <button className="btn btn-primary">
@@ -179,7 +181,7 @@ const Products = () => {
 
         <table
           id="productsTable"
-          className="table table-striped table-bordered"
+          className="table"
           style={{width: "100%"}}
         >
           <thead>
@@ -240,20 +242,14 @@ const Products = () => {
             ) : (
               <tr>
                 <td colSpan="7" className="text-center">
-                  No data available
+                  {loading ?null:"No products available"}
                 </td>
               </tr>
             )}
           </tbody>
         </table>
         <div className="flex justify-center">
-          <ClipLoader
-            color="#000"
-            loading={loading}
-            size={150}
-            aria-label="Loading Spinner"
-            data-testid="loader"
-          />
+          {loading ? <LoadingSpinner /> : null}
         </div>
       </div>
 

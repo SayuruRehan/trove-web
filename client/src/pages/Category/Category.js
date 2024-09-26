@@ -8,6 +8,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import {toast} from "react-toastify";
 import ClipLoader from "react-spinners/ClipLoader";
+import LoadingSpinner from "../../components/ui/loading-chip";
 
 const Category = () => {
   const [categories, setCategories] = useState([]);
@@ -136,21 +137,21 @@ const Category = () => {
   };
 
   return (
-    <>
-      <Header />
-      <div className="ml-10 mr-10 mb-10">
-        <div className="flex justify-center">
-          <h2>Category List</h2>
-        </div>
-        <Button
-          variant="primary"
-          className="mb-3 float-end"
-          onClick={() => handleShowModal("create")}
-        >
-          <FontAwesomeIcon icon={faPlus} /> Create New Category
-        </Button>
-        <table className="table table-bordered">
-          <thead>
+      <>
+        <Header/>
+        <div className="ml-10 mr-10 mb-10">
+          <div className="d-flex justify-content-between align-items-center mb-4">
+            <h2>Category List</h2>
+          </div>
+          <Button
+              variant="primary"
+              className="mb-3 float-end"
+              onClick={() => handleShowModal("create")}
+          >
+            <FontAwesomeIcon icon={faPlus}/> Create New Category
+          </Button>
+          <table className="table">
+            <thead>
             <tr>
               <th>#</th>
               <th>Category Name</th>
@@ -158,15 +159,15 @@ const Category = () => {
               <th>Status</th>
               <th>Actions</th>
             </tr>
-          </thead>
-          <tbody>
+            </thead>
+            <tbody>
             {categories.length > 0 ? (
-              categories.map((category, index) => (
-                  <tr key={category.categoryId}>
-                    <td>{index + 1}</td>
-                    <td>{category.categoryName}</td>
-                    <td>{category.categoryDescription || "No Description"}</td>
-                    <td>
+                categories.map((category, index) => (
+                    <tr key={category.categoryId}>
+                      <td>{index + 1}</td>
+                      <td>{category.categoryName}</td>
+                      <td>{category.categoryDescription || "No Description"}</td>
+                      <td>
   <span
       className={`px-2 py-1 rounded-full text-sm font-semibold ${
           category.isActive
@@ -176,130 +177,124 @@ const Category = () => {
   >
     {category.isActive ? "Active" : "Inactive"}
   </span>
-                    </td>
+                      </td>
 
-                    <td>
-                      <button
-                          className="mx-1 btn btn-warning btn-sm"
-                          onClick={() => handleShowModal("edit", category)}
-                      >
-                        <FontAwesomeIcon icon={faEdit}/>
-                      </button>
-                      <button
-                          className="mx-1 btn btn-danger btn-sm"
-                          onClick={() => handleShowModal("delete", category)}
-                      >
-                        <FontAwesomeIcon icon={faTrash}/>
-                      </button>
-                    </td>
-                  </tr>
-              ))
+                      <td>
+                        <button
+                            className="m-2"
+                            onClick={() => handleShowModal("edit", category)}
+                        >
+                          <FontAwesomeIcon icon={faEdit}/>
+                        </button>
+                        <button
+                            className="text-red-600 hover:text-red-800 transition"
+                            onClick={() => handleShowModal("delete", category)}
+                        >
+                          <FontAwesomeIcon icon={faTrash}/>
+                        </button>
+                      </td>
+                    </tr>
+                ))
             ) : (
                 <tr>
                   <td colSpan="5" className="text-center">
-                    No categories available
+                    {loading ? null : "No categories available"}
                   </td>
                 </tr>
             )}
-          </tbody>
-        </table>
-        <div className="flex justify-center">
-          <ClipLoader
-            color="#000"
-            loading={loading}
-            size={150}
-            aria-label="Loading Spinner"
-            data-testid="loader"
-          />
+            </tbody>
+          </table>
+          <div className="flex justify-center">
+            {loading ? <LoadingSpinner/> : null}
+          </div>
         </div>
-      </div>
 
-      {/* Modal for create, edit, and delete */}
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>
-            {modalType === "create"
-              ? "Create New Category"
-              : modalType === "edit"
-              ? "Edit Category"
-              : "Delete Category"}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {modalType === "create" || modalType === "edit" ? (
-            <form>
-              <div className="form-group">
-                <label>Category Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={newCategoryData.categoryName}
-                  onChange={(e) =>
-                    setNewCategoryData({
-                      ...newCategoryData,
-                      categoryName: e.target.value,
-                    })
-                  }
-                />
-                {errors.categoryName && (
-                  <small className="text-danger">{errors.categoryName}</small>
-                )}
-              </div>
-              <div className="form-group">
-                <label>Description (Optional)</label>
-                <textarea
-                  className="form-control"
-                  value={newCategoryData.categoryDescription}
-                  onChange={(e) =>
-                    setNewCategoryData({
-                      ...newCategoryData,
-                      categoryDescription: e.target.value,
-                    })
-                  }
-                ></textarea>
-              </div>
-              <div className="form-group">
-                <label>Active Status</label>
-                <select
-                  className="form-control"
-                  value={newCategoryData.isActive}
-                  onChange={(e) =>
-                    setNewCategoryData({
-                      ...newCategoryData,
-                      isActive: e.target.value === "true",
-                    })
-                  }
-                >
-                  <option value={true}>Active</option>
-                  <option value={false}>Inactive</option>
-                </select>
-                {errors.isActive && (
-                  <small className="text-danger">{errors.isActive}</small>
-                )}
-              </div>
-            </form>
-          ) : modalType === "delete" ? (
-            <p>Are you sure you want to delete this category?</p>
-          ) : null}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Close
-          </Button>
-          {modalType === "create" || modalType === "edit" ? (
-            <Button variant="primary" onClick={handleSaveCategory}>
-              {modalType === "create" ? "Create" : "Save Changes"}
+        {/* Modal for create, edit, and delete */}
+        <Modal show={showModal} onHide={handleCloseModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>
+              {modalType === "create"
+                  ? "Create New Category"
+                  : modalType === "edit"
+                      ? "Edit Category"
+                      : "Delete Category"}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {modalType === "create" || modalType === "edit" ? (
+                <form>
+                  <div className="form-group">
+                    <label>Category Name</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        value={newCategoryData.categoryName}
+                        onChange={(e) =>
+                            setNewCategoryData({
+                              ...newCategoryData,
+                              categoryName: e.target.value,
+                            })
+                        }
+                    />
+                    {errors.categoryName && (
+                        <small className="text-danger">{errors.categoryName}</small>
+                    )}
+                  </div>
+                  <div className="form-group">
+                    <label>Description (Optional)</label>
+                    <textarea
+                        className="form-control"
+                        value={newCategoryData.categoryDescription}
+                        onChange={(e) =>
+                            setNewCategoryData({
+                              ...newCategoryData,
+                              categoryDescription: e.target.value,
+                            })
+                        }
+                    ></textarea>
+                  </div>
+                  <div className="form-group">
+                    <label>Active Status</label>
+                    <select
+                        className="form-control"
+                        value={newCategoryData.isActive}
+                        onChange={(e) =>
+                            setNewCategoryData({
+                              ...newCategoryData,
+                              isActive: e.target.value === "true",
+                            })
+                        }
+                    >
+                      <option value={true}>Active</option>
+                      <option value={false}>Inactive</option>
+                    </select>
+                    {errors.isActive && (
+                        <small className="text-danger">{errors.isActive}</small>
+                    )}
+                  </div>
+                </form>
+            ) : modalType === "delete" ? (
+                <p>Are you sure you want to delete this category?</p>
+            ) : null}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleCloseModal}>
+              Close
             </Button>
-          ) : modalType === "delete" ? (
-            <Button variant="danger" onClick={handleDeleteCategory}>
-              Delete
-            </Button>
-          ) : null}
-        </Modal.Footer>
-      </Modal>
+            {modalType === "create" || modalType === "edit" ? (
+                <Button variant="primary" onClick={handleSaveCategory}>
+                  {modalType === "create" ? "Create" : "Save Changes"}
+                </Button>
+            ) : modalType === "delete" ? (
+                <Button variant="danger" onClick={handleDeleteCategory}>
+                  Delete
+                </Button>
+            ) : null}
+          </Modal.Footer>
+        </Modal>
 
-      <Footer />
-    </>
+        <Footer/>
+      </>
   );
 };
 
