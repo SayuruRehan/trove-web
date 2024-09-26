@@ -4,7 +4,7 @@ import Header from "../../components/Header";
 import CreateOrder from "./CreateOrder";
 import EditOrder from "./EditOrder";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
+import {faEdit, faTrash, faPlus} from "@fortawesome/free-solid-svg-icons";
 import $ from "jquery";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "datatables.net-bs4/css/dataTables.bootstrap4.min.css";
@@ -21,15 +21,15 @@ export default function Order() {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_WEB_API}/Orders`)
-      .then((response) => {
-        setOrders(response.data);
-        setIsDataLoaded(true);
-      })
-      .catch((error) => {
-        console.error("Error fetching orders:", error);
-        toast.error("Error fetching orders.");
-      });
+        .get(`${process.env.REACT_APP_WEB_API}/Orders`)
+        .then((response) => {
+          setOrders(response.data);
+          setIsDataLoaded(true);
+        })
+        .catch((error) => {
+          console.error("Error fetching orders:", error);
+          toast.error("Error fetching orders.");
+        });
     setLoading(false);
     return () => {
       if ($.fn.DataTable.isDataTable("#orderTable")) {
@@ -40,21 +40,26 @@ export default function Order() {
 
   useEffect(() => {
     if (isDataLoaded) {
-      $("#orderTable").DataTable();
+      $("#orderTable").DataTable({
+        paging: true,
+        searching: true,
+        ordering: true,
+        responsive: true,
+      });
     }
   }, [isDataLoaded]);
 
   const deleteOrder = (orderId) => {
     axios
-      .delete(`${process.env.REACT_APP_WEB_API}/Orders/${orderId}`)
-      .then((response) => {
-        setOrders(orders.filter((order) => order.orderId !== orderId));
-        toast.success("Order deleted successfully!");
-      })
-      .catch((error) => {
-        console.error("Error deleting order:", error);
-        toast.error("Error deleting order.");
-      });
+        .delete(`${process.env.REACT_APP_WEB_API}/Orders/${orderId}`)
+        .then((response) => {
+          setOrders(orders.filter((order) => order.orderId !== orderId));
+          toast.success("Order deleted successfully!");
+        })
+        .catch((error) => {
+          console.error("Error deleting order:", error);
+          toast.error("Error deleting order.");
+        });
   };
 
   const handleOrderCreated = (newOrder) => {
@@ -63,7 +68,7 @@ export default function Order() {
 
   const handleOrderUpdated = (updatedOrder) => {
     const updatedOrders = orders.map((order) =>
-      order.orderId === updatedOrder.orderId ? updatedOrder : order
+        order.orderId === updatedOrder.orderId ? updatedOrder : order
     );
     setOrders(updatedOrders);
   };
@@ -72,93 +77,106 @@ export default function Order() {
   const getStatusBackgroundClass = (status) => {
     switch (status.toLowerCase()) {
       case "delivered":
-        return "bg-success text-white";
+        return "bg-success text-white rounded-pill px-2 py-1";
       case "cancelled":
-        return "bg-danger text-white";
+        return "bg-danger text-white rounded-pill px-2 py-1";
       case "processing":
       default:
-        return "bg-warning text-dark";
+        return "bg-warning text-dark rounded-pill px-2 py-1";
     }
   };
 
   return (
-    <>
-      <Header />
-      <ToastContainer />
-      <div className="ml-10 mr-10 mb-10">
-        <div className="flex justify-center">
-          <h2>Order List</h2>
-        </div>
+      <>
+        <Header />
+        <ToastContainer />
+        <div className="container mt-5">
+          <div className="d-flex justify-content-between align-items-center mb-4">
+            <h2 className="text-center">Order List</h2>
+            <button className="btn btn-primary" onClick={() => <CreateOrder onOrderCreated={handleOrderCreated} />}>
+              <FontAwesomeIcon icon={faPlus} className="mr-2" />
+              Add Order
+            </button>
+          </div>
 
-        <div className="d-flex justify-content-end mb-3">
-          <CreateOrder onOrderCreated={handleOrderCreated} />
-        </div>
-        <table
-          id="orderTable"
-          className="table table-striped table-bordered"
-          style={{width: "100%"}}
-        >
-          <thead>
-            <tr>
-              <th>Order ID</th>
-              <th>Order Date</th>
-              <th>Description</th>
-              <th>Amount</th>
-              <th>Delivery Method</th>
-              <th>Status</th>
-              <th>Phone Number</th>
-              <th>Delivery Address</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.length > 0 ? (
-              orders.map((order) => (
-                <tr key={order.orderId}>
-                  <td>{order.orderId}</td>
-                  <td>{new Date(order.orderDate).toLocaleDateString()}</td>
-                  <td>{order.orderDescription}</td>
-                  <td>{order.amount}</td>
-                  <td>{order.deliveryMethod}</td>
-                  <td className={getStatusBackgroundClass(order.status)}>
-                    {order.status}
-                  </td>
-                  <td>{order.phoneNumber}</td>
-                  <td>{order.deliveryAddress}</td>
-                  <td>
-                    <EditOrder
-                      order={order}
-                      onOrderUpdated={handleOrderUpdated}
-                    />
-                    <button
-                      className="btn btn-danger btn-sm"
-                      onClick={() => deleteOrder(order.orderId)}
-                    >
-                      <FontAwesomeIcon icon={faTrash} />
-                    </button>
-                  </td>
-                </tr>
-              ))
-            ) : (
+          <div className="table-responsive">
+            <table id="orderTable" className="table table-hover table-bordered min-w-full bg-white">
+              <thead className="bg-gray-100">
               <tr>
-                <td colSpan="9" className="text-center">
-                  No data available
-                </td>
+                <th>Order ID</th>
+                <th>Order Date</th>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Delivery Method</th>
+                <th>Status</th>
+                <th>Phone Number</th>
+                <th>Delivery Address</th>
+                <th>Actions</th>
               </tr>
-            )}
-          </tbody>
-        </table>
-        <div className="flex justify-center">
-          <ClipLoader
-            color="#000"
-            loading={loading}
-            size={150}
-            aria-label="Loading Spinner"
-            data-testid="loader"
-          />
+              </thead>
+              <tbody>
+              {orders.length > 0 ? (
+                  orders.map((order) => (
+                      <tr key={order.orderId} className="align-middle">
+                        <td>{order.orderId}</td>
+                        <td>{new Date(order.orderDate).toLocaleDateString()}</td>
+                        <td>{order.orderDescription}</td>
+                        <td>${order.amount}</td>
+                        <td>{order.deliveryMethod}</td>
+                        <td>
+                          <span
+                              className={`px-2 py-1 rounded-full text-sm font-semibold ${
+                                  order.status.toLowerCase() === "delivered"
+                                      ? "bg-green-200 text-green-800"
+                                      : order.status.toLowerCase() === "cancelled"
+                                          ? "bg-red-200 text-red-800"
+                                          : order.status.toLowerCase() === "processing"
+                                              ? "bg-yellow-200 text-yellow-800"
+                                              : "bg-gray-200 text-gray-800"
+                              }`}
+                          >
+                            {order.status === "delivered"
+                                ? "Delivered"
+                                : order.status === "cancelled"
+                                    ? "Cancelled"
+                                    : order.status === "processing"
+                                        ? "Processing"
+                                        : "Pending"}
+                          </span>
+                        </td>
+
+                        <td>{order.phoneNumber}</td>
+                        <td>{order.deliveryAddress}</td>
+                        <td className="d-flex justify-content-around">
+                          <EditOrder order={order} onOrderUpdated={handleOrderUpdated}/>
+                          <button
+                              onClick={() => deleteOrder(order.orderId)}
+                              data-toggle="tooltip"
+                              title=""
+                              className="text-red-600 hover:text-red-800 transition"
+                          >
+                            <FontAwesomeIcon icon={faTrash}/>
+                          </button>
+                        </td>
+                      </tr>
+                  ))
+              ) : (
+                  <tr>
+                    <td colSpan="9" className="text-center">No orders available</td>
+                  </tr>
+              )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Loading Spinner */}
+          {loading && (
+              <div className="d-flex justify-content-center mt-4">
+                <ClipLoader color="#007bff" loading={loading} size={80} aria-label="Loading Spinner"/>
+              </div>
+          )}
         </div>
-      </div>
-      <Footer />
-    </>
+        <Footer/>
+      </>
   );
 }

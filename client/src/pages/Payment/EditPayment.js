@@ -76,11 +76,10 @@ export default function EditPayment({payment, onPaymentUpdated}) {
   return (
     <>
       <button
-        type="button"
-        className="btn btn-primary btn-sm me-2"
+        className=""
         onClick={handleShow}
       >
-        <FontAwesomeIcon icon={faEdit} className="me-1" /> Edit
+        <FontAwesomeIcon icon={faEdit} className="me-1" />
       </button>
 
       {showModal && (

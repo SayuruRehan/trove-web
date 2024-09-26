@@ -16,6 +16,8 @@ import {
 import {Link} from "react-router-dom";
 import Footer from "../../components/Footer";
 import ClipLoader from "react-spinners/ClipLoader";
+import LoadingScreen from "../../components/ui/loading-chip";
+import LoadingSpinner from "../../components/ui/loading-chip";
 
 const Inventory = () => {
   const [orders, setOrders] = useState([]);
@@ -184,7 +186,7 @@ const Inventory = () => {
 
         <table
           id="productsTable"
-          className="table table-striped table-bordered"
+          className="table "
           style={{width: "100%"}}
         >
           <thead>
@@ -222,19 +224,19 @@ const Inventory = () => {
                   <td>{categories[product.categoryId] || "Loading..."}</td>
                   <td>
                     <button
-                      className="mx-1 btn btn-info btn-sm"
+                      className="m-2"
                       onClick={() => handleShowModal("view", product)}
                     >
                       <FontAwesomeIcon icon={faEye} />
                     </button>
                     <button
-                      className="mx-1 btn btn-warning btn-sm"
+                      className="m-2"
                       onClick={() => handleShowModal("edit", product)}
                     >
                       <FontAwesomeIcon icon={faEdit} />
                     </button>
                     <button
-                      className="mx-1 btn btn-danger btn-sm"
+                      className="m-2 text-red-600 hover:text-red-800 transition"
                       onClick={() => handleShowModal("delete", product)}
                     >
                       <FontAwesomeIcon icon={faTrash} />
@@ -245,20 +247,15 @@ const Inventory = () => {
             ) : (
               <tr>
                 <td colSpan="7" className="text-center">
-                  No data available
+                  {loading ?null:"No data available"}
+
                 </td>
               </tr>
             )}
           </tbody>
         </table>
         <div className="flex justify-center">
-          <ClipLoader
-            color="#000"
-            loading={loading}
-            size={150}
-            aria-label="Loading Spinner"
-            data-testid="loader"
-          />
+          {loading ? <LoadingSpinner /> : null}
         </div>
       </div>
 

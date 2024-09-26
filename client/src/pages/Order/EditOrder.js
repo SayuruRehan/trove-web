@@ -184,8 +184,7 @@ export default function EditOrder({ order, onOrderUpdated }) {
     <>
       {/* Button to trigger the modal */}
       <button
-        type="button"
-        className="btn btn-primary btn-sm me-2"
+        className=""
         onClick={handleShow}
       >
         <FontAwesomeIcon icon={faEdit} />
