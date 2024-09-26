@@ -1,0 +1,83 @@
+.container {
+  margin-bottom: 40px;
+}
+
+.store-info-section h4 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.store-info-section .card {
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ratings-section {
+  margin-top: 30px;
+}
+
+.ratings-section h4 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.rating-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.average-rating h2 {
+  display: flex;
+  align-items: baseline;
+}
+
+.big-rating {
+  font-size: 2em; 
+  margin-right: 0.2em; 
+}
+
+.small-text {
+  font-size: 0.8em; 
+}
+
+.no-of-ratings {
+  text-align: center;
+}
+
+.star-distribution {
+  width: 100%;
+}
+
+.star-rating {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.progress-bar-container {
+  width: 80%;
+  margin-left: 10px; 
+}
+
+.progress-bar {
+  height: 30px;
+}
+
+.reviews-section {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  
+  .reviews-scroll {
+    max-height: 600px; 
+    overflow-y: auto; 
+    padding-right: 10px; 
+    margin-top: 20px;
+  }
+
+.card {
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
