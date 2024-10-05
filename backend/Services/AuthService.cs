@@ -39,12 +39,20 @@ namespace backend.Services
 
         public async Task<string> Login(UserLoginDTO userLoginDTO)
         {
-            var user = await _userRepository.FindByUsernameAsync(userLoginDTO.Email);
+            User user = await _userRepository.FindByEmailAsync(userLoginDTO.Email);
+
             if (user != null && await _userRepository.CheckPasswordAsync(user, userLoginDTO.Password))
             {
                 return GenerateJwtToken(user);
             }
+
             return null;
+        }
+
+
+        public async Task Logout()
+        {
+            await _userRepository.Logout();
         }
 
         private string GenerateJwtToken(User user)

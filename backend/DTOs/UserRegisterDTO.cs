@@ -6,20 +6,19 @@ namespace backend.DTOs
     public class UserRegisterDTO
     {
         [Required]
-
-        public string Firstname {get; set;}
+        public string Firstname { get; set; }
 
         [Required]
-        public string Lastname {get; set;}
+        public string Lastname { get; set; }
 
         [Required]
         [EmailAddress]
-        public string Email {get; set;}
+        public string Email { get; set; }
 
         [Required]
-        public string Phone {get; set;}
+        public string Phone { get; set; }
 
         [Required]
-        public string Password {get; set;}
+        public string Password { get; set; }
     }
 }
