@@ -21,5 +21,21 @@ Content-Type: application/json
 
 ###
 POST http://localhost:5074/api/auth/logout
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI0NTM4ODE0Mi1lODNkLTRlOTMtOWVmNC0xNmI4ZTZiY2JmOTciLCJlbWFpbCI6ImFub2pAZ21haWwuY29tIiwibmJmIjoxNzI2OTA0MjgyLCJleHAiOjE3MjY5MDc4ODIsImlhdCI6MTcyNjkwNDI4Mn0.lZ4NFRhoQi7IMPChBpoxjfBAiI_2OqTdSlnokDrQkQA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI0NTM4ODE0Mi1lODNkLTRlOTMtOWVmNC0xNmI4ZTZiY2JmOTciLCJlbWFpbCI6ImFub2pAZ21haWwuY29tIiwibmJmIjoxNzI2OTEwOTk5LCJleHAiOjE3MjY5MTQ1OTksImlhdCI6MTcyNjkxMDk5OX0._4Ap2aM1RoeGon5zcu8b6dgbgo4xX1sf_Su_grloRjY
 Content-Type: application/json
+
+
+###
+POST http://localhost:5074/api/products
+Content-Type: application/json
+
+{
+    "name": "Sample Product",
+    "description": "This is a sample product description.",
+    "price": 20.77,
+    "stock": 100
+}
+
+
+###
+GET http://localhost:5074/api/products
