@@ -1,14 +1,15 @@
 using backend.DTOs;
 using backend.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 [Route("api/[controller]")]
 [ApiController]
-public class UserController : ControllerBase
+public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
 
-    public UserController(IAuthService authService)
+    public AuthController(IAuthService authService)
     {
         _authService = authService;
     }
@@ -18,7 +19,6 @@ public class UserController : ControllerBase
     {
         var result = await _authService.Register(userRegisterDTO);
 
-        System.Console.WriteLine(userRegisterDTO);
 
         if (result.Succeeded)
         {
@@ -29,6 +29,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("login")]
+    [AllowAnonymous]
     public async Task<IActionResult> Login(UserLoginDTO userLoginDTO)
     {
         var token = await _authService.Login(userLoginDTO);
@@ -38,5 +39,14 @@ public class UserController : ControllerBase
         }
 
         return Unauthorized("Invalid login attempt.");
+    }
+
+    // Logout endpoint
+    [HttpPost("logout")]
+    [Authorize]
+    public async Task<IActionResult> Logout()
+    {
+        await _authService.Logout();
+        return Ok(new { message = "User logged out successfully!" });
     }
 }
