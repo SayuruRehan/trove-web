@@ -24,6 +24,10 @@ namespace backend.Repositories
             return await _userManager.FindByNameAsync(username);
         }
 
+        public async Task<User> FindByEmailAsync(string email){
+            return await _userManager.FindByEmailAsync(email);
+        }
+
         public async Task<bool> CheckPasswordAsync(User user, string password)
         {
             return await _userManager.CheckPasswordAsync(user, password);
