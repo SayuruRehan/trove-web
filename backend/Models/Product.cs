@@ -22,5 +22,12 @@ namespace backend.Models
 
         [BsonElement("stock")]
         public int Stock { get; set; }
+
+        [BsonElement("vendorId")]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string VendorId { get; set; }
+
+        [BsonElement("createdAt")]
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }
