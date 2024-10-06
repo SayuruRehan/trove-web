@@ -29,7 +29,7 @@ namespace backend.Repositories
             }
         }
 
-        // Get a particular Vendor
+        // Get a particular Vendor by Id
         public async Task<Vendor> GetVendorByIdAsync(string id)
         {
 
@@ -48,6 +48,12 @@ namespace backend.Repositories
                 throw new ApplicationException("Error fetching Vendor with this particular Id", ex);
             }
 
+        }
+
+        public async Task<Vendor> GetVendorByEmailAsync(string vendorEmail)
+        {
+            var filter = Builders<Vendor>.Filter.Eq(v => v.VendorEmail, vendorEmail);
+            return await _vendor.Find(filter).FirstOrDefaultAsync();
         }
 
         // Add a new Vendor
@@ -69,35 +75,82 @@ namespace backend.Repositories
         }
 
         // Update existing Vendor
-        public async Task<(Vendor updatedVendor, bool wasInactive)> UpdateVendorAsync(Vendor vendor)
+        // public async Task<(Vendor updatedVendor, bool wasInactive)> UpdateVendorAsync(string id, Vendor vendor)
+        // {
+        //     if (vendor == null)
+        //         throw new ArgumentException("Vendor cannot be null");
+
+        //     if (string.IsNullOrEmpty(id))
+        //         throw new ArgumentException("Invalid Vendor Id!");
+
+        //     try
+        //     {
+        //         var existingVendor = await GetVendorByIdAsync(id);
+        //         if (existingVendor == null)
+        //             throw new KeyNotFoundException("Vendor not found");
+
+        //         // Check if IsActive state has changed to true
+        //         bool wasInactive = !existingVendor.IsActive && vendor.IsActive;
+
+        //         // Create an update definition
+        //         var update = Builders<Vendor>.Update;
+        //         var updateDefinition = new List<UpdateDefinition<Vendor>>();
+
+        //         // Only update fields that are not null or default
+        //         if (vendor.VendorName != null) updateDefinition.Add(update.Set(v => v.VendorName, vendor.VendorName));
+        //         if (vendor.VendorEmail != null) updateDefinition.Add(update.Set(v => v.VendorEmail, vendor.VendorEmail));
+        //         if (vendor.VendorPhone != null) updateDefinition.Add(update.Set(v => v.VendorPhone, vendor.VendorPhone));
+        //         if (vendor.VendorAddress != null) updateDefinition.Add(update.Set(v => v.VendorAddress, vendor.VendorAddress));
+        //         if (vendor.VendorCity != null) updateDefinition.Add(update.Set(v => v.VendorCity, vendor.VendorCity));
+        //         updateDefinition.Add(update.Set(v => v.IsActive, vendor.IsActive));
+        //         // Add other fields as necessary
+
+        //         var combinedUpdate = update.Combine(updateDefinition);
+
+        //         var filter = Builders<Vendor>.Filter.Eq(v => v.Id, id);
+        //         var options = new FindOneAndUpdateOptions<Vendor>
+        //         {
+        //             ReturnDocument = ReturnDocument.After
+        //         };
+
+        //         var updatedVendor = await _vendor.FindOneAndUpdateAsync(filter, combinedUpdate, options);
+
+        //         return (updatedVendor, wasInactive);
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         throw new ApplicationException("Error occurred when updating a Vendor", ex);
+        //     }
+        // }
+
+        public async Task<Vendor> VendorUpdateAsync(Vendor vendor)
         {
             if (vendor == null)
-                throw new ArgumentException("Vendor not found");
+                throw new ArgumentNullException(nameof(vendor));
 
-            if (string.IsNullOrEmpty(vendor.Id))
-                throw new ArgumentException("Invalid Vendor Id!");
+
+            var filter = Builders<Vendor>.Filter.Eq(p => p.Id, vendor.Id);
 
             try
             {
-                var existingVendor = await GetVendorByIdAsync(vendor.Id);
+                // Use FindOneAndReplaceOptions to return the updated document
+                var options = new FindOneAndReplaceOptions<Vendor>
+                {
+                    ReturnDocument = ReturnDocument.After // Ensures the updated document is returned
+                };
 
-                // Check if IsActive state has changed to true
-                bool wasInactive = existingVendor != null && !existingVendor.IsActive && vendor.IsActive;
+                var result = await _vendor.FindOneAndReplaceAsync(filter, vendor, options)
+                             ?? throw new KeyNotFoundException($"Product with ID {vendor.Id} not found.");
 
-                var filteredResult = Builders<Vendor>.Filter.Eq(v => v.Id, vendor.Id);
-                var updatedVendor = await _vendor.FindOneAndReplaceAsync(filteredResult, vendor)
-                    ?? throw new KeyNotFoundException("Vendor is not found ");
-
-                return (updatedVendor, wasInactive);
+                return result; // Return the updated vendor
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error occured when updating a Vendor", ex);
+                throw new ApplicationException($"Error updating product with ID {vendor.Id}", ex);
             }
         }
 
         // Activate paticular Vendor
-
         public async Task ActivateVendorAsync(string id)
         {
             if (string.IsNullOrEmpty(id))

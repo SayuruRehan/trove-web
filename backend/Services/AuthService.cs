@@ -7,6 +7,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 
 
@@ -32,22 +34,38 @@ namespace backend.Services
                 Email = userRegisterDTO.Email,
                 UserName = userRegisterDTO.Email,
                 Phone = userRegisterDTO.Phone,
+                Role = userRegisterDTO.Role,
                 Status = Enum.TryParse(userRegisterDTO.Status, out UserStatus status) ? status : UserStatus.Deactive
             };
 
             return await _userRepository.CreateUserAsync(user, userRegisterDTO.Password);
         }
 
-        public async Task<string> Login(UserLoginDTO userLoginDTO)
+        // Login function
+        [HttpPost("login")]
+        public async Task<UserLoginResponseDTO> Login([FromBody] UserLoginDTO userLoginDTO)
         {
-            User user = await _userRepository.FindByEmailAsync(userLoginDTO.Email);
+            var user = await _userRepository.FindByEmailAsync(userLoginDTO.Email);
+
 
             if (user != null && await _userRepository.CheckPasswordAsync(user, userLoginDTO.Password))
             {
-                return GenerateJwtToken(user);
+                // return GenerateJwtToken(user);
+                var token = GenerateJwtToken(user);
+
+                // Return userId, role, and the generated JWT token
+                return new UserLoginResponseDTO
+                {
+                    UserId = user.Id.ToString(),
+                    Firstname = user.Firstname,
+                    Lastname = user.Lastname,
+                    Role = user.Role,
+                    Token = token,
+                };
             }
 
             return null;
+
         }
 
 
@@ -65,7 +83,8 @@ namespace backend.Services
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Email, user.Email)
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Role, user.Role)
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
