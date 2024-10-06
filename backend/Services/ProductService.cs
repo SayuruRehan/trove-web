@@ -10,10 +10,12 @@ namespace backend.Services
     public class ProductService
     {
         private readonly IProductRepository _productRepository;
+        private readonly CloudinaryService _cloudinaryService;
 
-        public ProductService(IProductRepository productRepository)
+        public ProductService(IProductRepository productRepository, CloudinaryService cloudinaryService)
         {
             _productRepository = productRepository;
+            _cloudinaryService = cloudinaryService;
         }
 
         // Retrieve all products
@@ -56,22 +58,32 @@ namespace backend.Services
         // Create a new product
         public async Task<ProductDto> CreateProductAsync(CreateProductDto createProductDto)
         {
+            var uploadResult = await _cloudinaryService.UploadImageAsync(createProductDto.Image);
+
+            if (uploadResult.Error != null)
+            {
+                throw new Exception(uploadResult.Error.Message);
+            }
+
             var product = new Product
             {
                 Name = createProductDto.Name,
                 Description = createProductDto.Description,
                 Price = createProductDto.Price,
-                Stock = createProductDto.Stock
+                Stock = createProductDto.Stock,
+                ImageUrl = uploadResult.SecureUrl.ToString()
             };
 
             var createdProduct = await _productRepository.CreateProductAsync(product);
+
             return new ProductDto
             {
                 Id = createdProduct.Id,
                 Name = createdProduct.Name,
                 Description = createdProduct.Description,
                 Price = createdProduct.Price,
-                Stock = createdProduct.Stock
+                Stock = createdProduct.Stock,
+                ImageUrl = createdProduct.ImageUrl
             };
         }
 
