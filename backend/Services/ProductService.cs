@@ -87,33 +87,72 @@ namespace backend.Services
             };
         }
 
-        // Update an existing product
-        public async Task<ProductDto> UpdateProductAsync(UpdateProductDto updateProductDto)
+        // Delete a product by ID
+        public async Task<ProductDto> UpdateProductAsync(string id, UpdateProductDto updateProductDto)
         {
-            if (string.IsNullOrEmpty(updateProductDto.Id))
-                throw new ArgumentException("Invalid product ID.");
+            // Check if the product exists
+            var existingProduct = await _productRepository.GetProductByIdAsync(id);
+            if (existingProduct == null)
+            {
+                throw new KeyNotFoundException("Product not found.");
+            }
+
+
+            string imageUrl = existingProduct.ImageUrl;
+
+            if (updateProductDto.Image != null)
+            {
+                // If there's an existing image URL, remove it from Cloudinary (or your image hosting service)
+                if (!string.IsNullOrEmpty(existingProduct.ImageUrl))
+                {
+                    var imagePublicId = GetImagePublicId(existingProduct.ImageUrl);  // Extract the public ID from the existing URL
+                    var deleteResult = await _cloudinaryService.DeleteImageAsync(imagePublicId);  // Delete the old image
+                    if (deleteResult.Error != null)
+                    {
+                        throw new Exception("Error deleting old image: " + deleteResult.Error.Message);
+                    }
+                }
+
+                // Upload the new image to Cloudinary
+                var uploadResult = await _cloudinaryService.UploadImageAsync(updateProductDto.Image);
+                if (uploadResult.Error != null)
+                {
+                    throw new Exception(uploadResult.Error.Message);
+                }
+
+                // Update the product with the new image URL
+                imageUrl = uploadResult.SecureUrl.ToString();
+            }
+
 
             var product = new Product
             {
-                Id = updateProductDto.Id,
-                ProductName = updateProductDto.ProductName,
-                Description = updateProductDto.Description,
+                Id = existingProduct.Id,
+                ProductName = updateProductDto.ProductName ?? existingProduct.ProductName,
+                Description = updateProductDto.Description ?? existingProduct.Description,
                 ProductPrice = updateProductDto.ProductPrice,
-                Stock = updateProductDto.Stock
+                Stock = updateProductDto.Stock,
+                ImageUrl = imageUrl,
+                VendorId = existingProduct.VendorId
             };
 
+            // Step 4: Update the product in the repository
             var updatedProduct = await _productRepository.UpdateProductAsync(product);
+
+            // Step 5: Return the updated product DTO
             return new ProductDto
             {
                 Id = updatedProduct.Id,
                 ProductName = updatedProduct.ProductName,
                 Description = updatedProduct.Description,
                 ProductPrice = updatedProduct.ProductPrice,
-                Stock = updatedProduct.Stock
+                Stock = updatedProduct.Stock,
+                ImageUrl = updatedProduct.ImageUrl,
+                VendorId = updatedProduct.VendorId
             };
         }
 
-        // Delete a product by ID
+
         public Task DeleteProductAsync(string id) => _productRepository.DeleteProductAsync(id);
 
         // Retrieve products by vendorId
@@ -132,6 +171,14 @@ namespace backend.Services
             });
 
             return productDtos;
+        }
+        private string GetImagePublicId(string imageUrl)
+        {
+            var uri = new Uri(imageUrl);
+            var segments = uri.AbsolutePath.Split('/');
+            var publicIdWithExtension = segments[segments.Length - 1];  // "your-image.jpg"
+            var publicId = Path.GetFileNameWithoutExtension(publicIdWithExtension); // "your-image"
+            return publicId;
         }
     }
 }

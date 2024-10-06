@@ -1,10 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using backend.Services;
 using backend.DTOs;
-using backend.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace backend.Controllers
 {
@@ -82,27 +78,20 @@ namespace backend.Controllers
             return BadRequest("Product creation failed.");
         }
 
-        // Update a product by ID
+
         [HttpPut("{id}")]
-        public async Task<ActionResult<ProductDto>> Update(string id, [FromBody] UpdateProductDto updateProductDto)
+        public async Task<ActionResult<ProductDto>> Update(string id, [FromForm] UpdateProductDto updateProductDto)
         {
-            if (id != updateProductDto.Id) return BadRequest("Product ID mismatch.");
+
+
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var updatedProduct = await _productService.UpdateProductAsync(updateProductDto);
+            var updatedProduct = await _productService.UpdateProductAsync(id, updateProductDto);
             if (updatedProduct == null) return NotFound();
 
-            var updatedProductDto = new ProductDto
-            {
-                Id = updatedProduct.Id,
-                ProductName = updatedProduct.ProductName,
-                Description = updatedProduct.Description,
-                ProductPrice = updatedProduct.ProductPrice,
-                Stock = updatedProduct.Stock
-            };
-
-            return Ok(updatedProductDto);
+            return Ok(updatedProduct);
         }
+
 
         // Delete a product by ID
         [HttpDelete("{id}")]

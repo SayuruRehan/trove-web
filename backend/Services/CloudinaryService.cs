@@ -1,4 +1,3 @@
-using System;
 using backend.Models;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
@@ -37,6 +36,13 @@ namespace backend.Services
             }
 
             return uploadResult;
+        }
+
+        // Method to delete an image using its public ID
+        public async Task<DeletionResult> DeleteImageAsync(string publicId)
+        {
+            var deleteParams = new DeletionParams(publicId);
+            return await _cloudinary.DestroyAsync(deleteParams);
         }
     }
 }
