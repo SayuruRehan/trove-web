@@ -19,21 +19,20 @@ namespace backend.Models{
         public string? Id {get; set;}
 
         [PersonalData]
-        public string VendorName {get; set;}
+        public required string VendorName {get; set;}
 
         [PersonalData]
-        public string VendorEmail {get; set;}
+        public required string VendorEmail {get; set;}
 
         [PersonalData]
-        public string VendorPhone {get; set;}
+        public required string VendorPhone {get; set;}
 
-        public string VendorAddress {get; set;}
+        public required string VendorAddress {get; set;}
 
-        public string VendorCity {get; set;}
+        public required string VendorCity {get; set;}
 
-        public string CustomerFeedback {get; set;}
+        public List<string> CustomerFeedback {get; set;}
 
-        public int Rating {get; set;}
+        public List<int> Rating {get; set;}
     }
 }
-

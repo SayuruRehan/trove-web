@@ -75,17 +75,17 @@ namespace backend.Controllers
 
         if(newVendor != null)
         {
-            var createdVendorDTO = new VendorDTO
-            {
-                Id = newVendor.Id,
-                VendorName = newVendor.VendorName,
-                VendorEmail = newVendor.VendorEmail,
-                VendorPhone = newVendor.VendorPhone,
-                VendorAddress = newVendor.VendorAddress,
-                VendorCity = newVendor.VendorCity
-            };
+            //var createdVendorDTO = new VendorDTO
+            //{
+            //    Id = newVendor.Id,
+            //    VendorName = newVendor.VendorName,
+            //    VendorEmail = newVendor.VendorEmail,
+            //    VendorPhone = newVendor.VendorPhone,
+            //    VendorAddress = newVendor.VendorAddress,
+            //    VendorCity = newVendor.VendorCity
+            //};
 
-            return CreatedAtAction(nameof(GetVendorById), new { id = newVendor.Id }, createdVendorDTO);
+            return CreatedAtAction(nameof(GetVendorById), new { id = newVendor.Id }, newVendor);
         }
 
         return BadRequest("Vendor creation failed!");

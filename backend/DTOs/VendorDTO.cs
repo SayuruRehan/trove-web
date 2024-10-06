@@ -4,18 +4,18 @@ namespace backend.DTOs
     {
         public string Id {get; set;}
 
-        public string VendorName {get; set;}
+        public required string VendorName {get; set;}
 
-        public string VendorEmail {get; set;}
+        public required string VendorEmail {get; set;}
 
-        public string VendorPhone {get; set;}
+        public required string VendorPhone {get; set;}
 
-        public string VendorAddress {get; set;}
+        public required string VendorAddress {get; set;}
 
-        public string VendorCity {get; set;}
+        public required string VendorCity {get; set;}
 
-        public string CustomerFeedback {get; set;}
+        public List<string> CustomerFeedback {get; set;} = new List<string>();
 
-        public int Rating {get; set;}
+        public List<int> Rating {get; set;} = new List<int>();
     }
 }

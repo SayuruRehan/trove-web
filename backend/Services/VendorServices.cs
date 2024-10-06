@@ -69,7 +69,9 @@ namespace backend.Services
                 VendorEmail = createVendorDTO.VendorEmail,
                 VendorPhone = createVendorDTO.VendorPhone,
                 VendorAddress = createVendorDTO.VendorAddress,
-                VendorCity = createVendorDTO.VendorCity
+                VendorCity = createVendorDTO.VendorCity,
+                CustomerFeedback = new List<string>(),
+                Rating = new List<int>()
             };
             
             var createdVendor = await _vendorReopository.CreateVendorAsync(vendor);
@@ -83,7 +85,9 @@ namespace backend.Services
                 VendorEmail = createdVendor.VendorEmail,
                 VendorPhone = createdVendor.VendorPhone,
                 VendorAddress = createdVendor.VendorAddress,
-                VendorCity = createdVendor.VendorCity
+                VendorCity = createdVendor.VendorCity,
+                CustomerFeedback = createdVendor.CustomerFeedback,
+                Rating = createdVendor.Rating
             };
 
         }
