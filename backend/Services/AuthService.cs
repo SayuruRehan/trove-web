@@ -27,8 +27,11 @@ namespace backend.Services
         {
             var user = new User
             {
-                UserName = userRegisterDTO.Username,
-                Email = userRegisterDTO.Email
+                Firstname = userRegisterDTO.Firstname,
+                Lastname = userRegisterDTO.Lastname,
+                Email = userRegisterDTO.Email,
+                UserName = userRegisterDTO.Email,
+                Phone = userRegisterDTO.Phone
             };
 
             return await _userRepository.CreateUserAsync(user, userRegisterDTO.Password);
@@ -36,12 +39,20 @@ namespace backend.Services
 
         public async Task<string> Login(UserLoginDTO userLoginDTO)
         {
-            var user = await _userRepository.FindByUsernameAsync(userLoginDTO.Username);
+            User user = await _userRepository.FindByEmailAsync(userLoginDTO.Email);
+
             if (user != null && await _userRepository.CheckPasswordAsync(user, userLoginDTO.Password))
             {
                 return GenerateJwtToken(user);
             }
+
             return null;
+        }
+
+
+        public async Task Logout()
+        {
+            await _userRepository.Logout();
         }
 
         private string GenerateJwtToken(User user)
@@ -53,7 +64,7 @@ namespace backend.Services
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Name, user.UserName)
+                    new Claim(ClaimTypes.Email, user.Email)
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)

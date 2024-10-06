@@ -7,5 +7,7 @@ namespace backend.Interfaces
     {
         Task<IdentityResult> Register(UserRegisterDTO userRegisterDTO);
         Task<string> Login(UserLoginDTO userLoginDTO);
+
+        Task Logout();
     }
 }
