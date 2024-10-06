@@ -16,23 +16,43 @@ namespace backend.Services
             _orderRepository = orderRepository;
         }
 
+        // Get all orders
         public async Task<IEnumerable<OrderDto>> GetAllOrdersAsync()
         {
             var orders = await _orderRepository.GetAllOrdersAsync();
-            return orders.Select(o => new OrderDto
+
+            // Use a mapping function to improve code reuse
+            return orders.Select(MapToOrderDto);
+        }
+
+        // Get order by ID
+        public async Task<OrderDto> GetOrderByIdAsync(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                return null;
+
+            var order = await _orderRepository.GetOrderByIdAsync(id);
+            if (order == null) return null;
+
+            return MapToOrderDto(order);
+        }
+
+        // Create a new order
+        public async Task<OrderDto> CreateOrderAsync(CreateOrderDto createOrderDto)
+        {
+            if (createOrderDto == null)
+                throw new ArgumentNullException(nameof(createOrderDto));
+
+            var order = new Order
             {
-                Id = o.Id,
-                UserId = o.UserId,
-                CreatedAt = o.CreatedAt,
-                Status = o.Status,
-                TotalAmount = o.TotalAmount,
-                ShippingAddress = new AddressDto
+                UserId = createOrderDto.UserId,
+                ShippingAddress = new Address
                 {
-                    Street = o.ShippingAddress.Street,
-                    City = o.ShippingAddress.City,
-                    Zip = o.ShippingAddress.Zip
+                    Street = createOrderDto.ShippingAddress.Street,
+                    City = createOrderDto.ShippingAddress.City,
+                    Zip = createOrderDto.ShippingAddress.Zip
                 },
-                OrderItems = o.OrderItems.Select(oi => new OrderItemDto
+                OrderItems = createOrderDto.OrderItems.Select(oi => new OrderItem
                 {
                     ProductId = oi.ProductId,
                     ProductName = oi.ProductName,
@@ -40,16 +60,59 @@ namespace backend.Services
                     Quantity = oi.Quantity,
                     VendorId = oi.VendorId,
                     VendorName = oi.VendorName,
-                    FulfillmentStatus = oi.FulfillmentStatus
+                    FulfillmentStatus = oi.FulfillmentStatus ?? "Pending" // Provide a default if not supplied
                 }).ToList()
-            });
+            };
+
+            var createdOrder = await _orderRepository.CreateOrderAsync(order);
+            return MapToOrderDto(createdOrder);
         }
 
-        public async Task<OrderDto> GetOrderByIdAsync(string id)
+        // Update an existing order
+        public async Task<OrderDto> UpdateOrderAsync(UpdateOrderDto updateOrderDto)
         {
-            var order = await _orderRepository.GetOrderByIdAsync(id);
-            if (order == null) return null;
+            if (updateOrderDto == null)
+                throw new ArgumentNullException(nameof(updateOrderDto));
 
+            var order = await _orderRepository.GetOrderByIdAsync(updateOrderDto.Id);
+            if (order == null)
+                throw new KeyNotFoundException($"Order with ID {updateOrderDto.Id} not found.");
+
+            // Update the relevant fields
+            order.Status = updateOrderDto.Status;
+            order.ShippingAddress = new Address
+            {
+                Street = updateOrderDto.ShippingAddress.Street,
+                City = updateOrderDto.ShippingAddress.City,
+                Zip = updateOrderDto.ShippingAddress.Zip
+            };
+            order.OrderItems = updateOrderDto.OrderItems.Select(oi => new OrderItem
+            {
+                ProductId = oi.ProductId,
+                ProductName = oi.ProductName,
+                ProductPrice = oi.ProductPrice,
+                Quantity = oi.Quantity,
+                VendorId = oi.VendorId,
+                VendorName = oi.VendorName,
+                FulfillmentStatus = oi.FulfillmentStatus ?? "Pending" // Ensure this has a value
+            }).ToList();
+
+            var updatedOrder = await _orderRepository.UpdateOrderAsync(order);
+            return MapToOrderDto(updatedOrder);
+        }
+
+        // Delete an order by ID
+        public async Task DeleteOrderAsync(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException("Order ID cannot be null or empty.", nameof(id));
+
+            await _orderRepository.DeleteOrderAsync(id);
+        }
+
+        // Map Order entity to OrderDto for reuse
+        private OrderDto MapToOrderDto(Order order)
+        {
             return new OrderDto
             {
                 Id = order.Id,
@@ -74,112 +137,6 @@ namespace backend.Services
                     FulfillmentStatus = oi.FulfillmentStatus
                 }).ToList()
             };
-        }
-
-        public async Task<OrderDto> CreateOrderAsync(CreateOrderDto createOrderDto)
-        {
-            var order = new Order
-            {
-                UserId = createOrderDto.UserId,
-                ShippingAddress = new Address
-                {
-                    Street = createOrderDto.ShippingAddress.Street,
-                    City = createOrderDto.ShippingAddress.City,
-                    Zip = createOrderDto.ShippingAddress.Zip
-                },
-                OrderItems = createOrderDto.OrderItems.Select(oi => new OrderItem
-                {
-                    ProductId = oi.ProductId,
-                    ProductName = oi.ProductName,
-                    ProductPrice = oi.ProductPrice,
-                    Quantity = oi.Quantity,
-                    VendorId = oi.VendorId,
-                    VendorName = oi.VendorName,
-                    FulfillmentStatus = oi.FulfillmentStatus
-                }).ToList()
-            };
-
-            var createdOrder = await _orderRepository.CreateOrderAsync(order);
-            return new OrderDto
-            {
-                Id = createdOrder.Id,
-                UserId = createdOrder.UserId,
-                CreatedAt = createdOrder.CreatedAt,
-                Status = createdOrder.Status,
-                TotalAmount = createdOrder.TotalAmount,
-                ShippingAddress = new AddressDto
-                {
-                    Street = createdOrder.ShippingAddress.Street,
-                    City = createdOrder.ShippingAddress.City,
-                    Zip = createdOrder.ShippingAddress.Zip
-                },
-                OrderItems = createdOrder.OrderItems.Select(oi => new OrderItemDto
-                {
-                    ProductId = oi.ProductId,
-                    ProductName = oi.ProductName,
-                    ProductPrice = oi.ProductPrice,
-                    Quantity = oi.Quantity,
-                    VendorId = oi.VendorId,
-                    VendorName = oi.VendorName,
-                    FulfillmentStatus = oi.FulfillmentStatus
-                }).ToList()
-            };
-        }
-
-        public async Task<OrderDto> UpdateOrderAsync(UpdateOrderDto updateOrderDto)
-        {
-            var order = new Order
-            {
-                Id = updateOrderDto.Id,
-                Status = updateOrderDto.Status,
-                ShippingAddress = new Address
-                {
-                    Street = updateOrderDto.ShippingAddress.Street,
-                    City = updateOrderDto.ShippingAddress.City,
-                    Zip = updateOrderDto.ShippingAddress.Zip
-                },
-                OrderItems = updateOrderDto.OrderItems.Select(oi => new OrderItem
-                {
-                    ProductId = oi.ProductId,
-                    ProductName = oi.ProductName,
-                    ProductPrice = oi.ProductPrice,
-                    Quantity = oi.Quantity,
-                    VendorId = oi.VendorId,
-                    VendorName = oi.VendorName,
-                    FulfillmentStatus = oi.FulfillmentStatus
-                }).ToList()
-            };
-
-            var updatedOrder = await _orderRepository.UpdateOrderAsync(order);
-            return new OrderDto
-            {
-                Id = updatedOrder.Id,
-                UserId = updatedOrder.UserId,
-                CreatedAt = updatedOrder.CreatedAt,
-                Status = updatedOrder.Status,
-                TotalAmount = updatedOrder.TotalAmount,
-                ShippingAddress = new AddressDto
-                {
-                    Street = updatedOrder.ShippingAddress.Street,
-                    City = updatedOrder.ShippingAddress.City,
-                    Zip = updatedOrder.ShippingAddress.Zip
-                },
-                OrderItems = updatedOrder.OrderItems.Select(oi => new OrderItemDto
-                {
-                    ProductId = oi.ProductId,
-                    ProductName = oi.ProductName,
-                    ProductPrice = oi.ProductPrice,
-                    Quantity = oi.Quantity,
-                    VendorId = oi.VendorId,
-                    VendorName = oi.VendorName,
-                    FulfillmentStatus = oi.FulfillmentStatus
-                }).ToList()
-            };
-        }
-
-        public async Task DeleteOrderAsync(string id)
-        {
-            await _orderRepository.DeleteOrderAsync(id);
         }
     }
 }
