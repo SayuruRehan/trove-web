@@ -32,10 +32,17 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> Login(UserLoginDTO userLoginDTO)
     {
-        var token = await _authService.Login(userLoginDTO);
-        if (token != null)
+        var userLoginResponse = await _authService.Login(userLoginDTO);
+        if (userLoginResponse != null)
         {
-            return Ok(new { token });
+            return Ok(new UserLoginResponseDTO
+            {
+                UserId = userLoginResponse.UserId,  // Convert ObjectId or Guid to string
+                Firstname = userLoginResponse.Firstname,
+                Lastname = userLoginResponse.Lastname,
+                Role = userLoginResponse.Role,
+                Token = userLoginResponse.Token
+            });
         }
 
         return Unauthorized("Invalid login attempt.");
@@ -55,16 +62,16 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> UpdateUser(Guid userId, UserUpdateDTO userUpdateDTO)
     {
 
-    var result = await _authService.UpdateUser(userId, userUpdateDTO);
+        var result = await _authService.UpdateUser(userId, userUpdateDTO);
 
-    if (result.Succeeded)
-    {
-        return Ok(new { message = "User updated successfully!" });
+        if (result.Succeeded)
+        {
+            return Ok(new { message = "User updated successfully!" });
+        }
+
+        return BadRequest(result.Errors);
+
     }
 
-    return BadRequest(result.Errors);
 
-    }
-
-    
 }
