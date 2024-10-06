@@ -39,3 +39,74 @@ Content-Type: application/json
 
 ###
 GET http://localhost:5074/api/products
+
+###
+POST http://localhost:5074/api/order
+Content-Type: application/json
+{
+  "userId": "65074c59a3e8fa0c12345679",
+  "createdAt": "2024-09-26T05:45:07Z",
+  "status": "Pending",
+  "totalAmount": 199.99,
+  "shippingAddress": {
+    "street": "123 Main St",
+    "city": "New York",
+    "zip": "10001"
+  },
+  "orderItems": [
+    {
+      "productId": "65074c59a3e8fa0c87654321",
+      "productName": "Sample Product 1",
+      "productPrice": 99.99,
+      "quantity": 1,
+      "vendorId": "65074c59a3e8fa0c65432109",
+      "vendorName": "Sample Vendor 1",
+      "fulfillmentStatus": "Pending"
+    },
+    {
+      "productId": "65074c59a3e8fa0c76543210",
+      "productName": "Sample Product 2",
+      "productPrice": 99.99,
+      "quantity": 1,
+      "vendorId": "65074c59a3e8fa0c54321098",
+      "vendorName": "Sample Vendor 2",
+      "fulfillmentStatus": "Pending"
+    }
+  ]
+}
+
+###
+PUT http://localhost:5074/api/order/66f4f9aef9560529a6eb055a
+Content-Type: application/json
+{
+  "id":"66f4f9aef9560529a6eb055a",
+  "userId": "65074c59a3e8fa0c12345679",
+  "createdAt": "2024-09-26T05:45:07Z",
+  "status": "Fulfilled",
+  "totalAmount": 199.99,
+  "shippingAddress": {
+    "street": "123 Main St",
+    "city": "New York",
+    "zip": "10001"
+  },
+  "orderItems": [
+    {
+      "productId": "65074c59a3e8fa0c87654321",
+      "productName": "Sample Product 1",
+      "productPrice": 99.99,
+      "quantity": 1,
+      "vendorId": "65074c59a3e8fa0c65432109",
+      "vendorName": "Sample Vendor 1",
+      "fulfillmentStatus": "Pending"
+    },
+    {
+      "productId": "65074c59a3e8fa0c76543210",
+      "productName": "Sample Product 2",
+      "productPrice": 99.99,
+      "quantity": 1,
+      "vendorId": "65074c59a3e8fa0c54321098",
+      "vendorName": "Sample Vendor 2",
+      "fulfillmentStatus": "Pending"
+    }
+  ]
+}
