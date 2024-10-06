@@ -1,9 +1,7 @@
 using backend.Interfaces;
 using backend.Models;
 using MongoDB.Driver;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System;
+
 
 namespace backend.Repositories
 {
@@ -76,7 +74,13 @@ namespace backend.Repositories
 
             try
             {
-                var result = await _product.FindOneAndReplaceAsync(filter, product)
+                // Use FindOneAndReplaceOptions to return the updated document
+                var options = new FindOneAndReplaceOptions<Product>
+                {
+                    ReturnDocument = ReturnDocument.After // Ensures the updated document is returned
+                };
+
+                var result = await _product.FindOneAndReplaceAsync(filter, product, options)
                              ?? throw new KeyNotFoundException($"Product with ID {product.Id} not found.");
 
                 return result; // Return the updated product
@@ -86,6 +90,7 @@ namespace backend.Repositories
                 throw new ApplicationException($"Error updating product with ID {product.Id}", ex);
             }
         }
+
 
         // Delete a product by its ID
         public async Task DeleteProductAsync(string id)
@@ -107,5 +112,23 @@ namespace backend.Repositories
                 throw new ApplicationException($"Error deleting product with ID {id}", ex);
             }
         }
+
+        // Retrieve products by vendorId
+        public async Task<IEnumerable<Product>> GetProductsByVendorIdAsync(string vendorId)
+        {
+            if (string.IsNullOrEmpty(vendorId))
+                throw new ArgumentException("Invalid vendor ID.");
+
+            var filter = Builders<Product>.Filter.Eq(p => p.VendorId, vendorId);
+            try
+            {
+                return await _product.Find(filter).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Error retrieving products for vendor ID {vendorId}", ex);
+            }
+        }
+
     }
 }

@@ -1,10 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using backend.Services;
 using backend.DTOs;
-using backend.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace backend.Controllers
 {
@@ -27,10 +23,13 @@ namespace backend.Controllers
             var productDtos = products.Select(p => new ProductDto
             {
                 Id = p.Id,
-                Name = p.Name,
+                ProductName = p.ProductName,
                 Description = p.Description,
-                Price = p.Price,
-                Stock = p.Stock
+                ProductPrice = p.ProductPrice,
+                Stock = p.Stock,
+                ImageUrl = p.ImageUrl,
+                VendorId = p.VendorId,
+                VendorName = p.VendorName
             });
 
             return Ok(productDtos);
@@ -46,10 +45,13 @@ namespace backend.Controllers
             var productDto = new ProductDto
             {
                 Id = product.Id,
-                Name = product.Name,
+                ProductName = product.ProductName,
                 Description = product.Description,
-                Price = product.Price,
-                Stock = product.Stock
+                ProductPrice = product.ProductPrice,
+                Stock = product.Stock,
+                ImageUrl = product.ImageUrl,
+                VendorId = product.VendorId,
+                VendorName = product.VendorName
             };
 
             return Ok(productDto);
@@ -68,11 +70,13 @@ namespace backend.Controllers
                 var createdProductDto = new ProductDto
                 {
                     Id = result.Id,
-                    Name = result.Name,
+                    ProductName = result.ProductName,
                     Description = result.Description,
-                    Price = result.Price,
+                    ProductPrice = result.ProductPrice,
                     Stock = result.Stock,
-                    ImageUrl = result.ImageUrl
+                    ImageUrl = result.ImageUrl,
+                    VendorId = result.VendorId,
+                    VendorName = result.VendorName
                 };
 
                 return CreatedAtAction(nameof(GetById), new { id = result.Id }, createdProductDto);
@@ -81,27 +85,20 @@ namespace backend.Controllers
             return BadRequest("Product creation failed.");
         }
 
-        // Update a product by ID
+
         [HttpPut("{id}")]
-        public async Task<ActionResult<ProductDto>> Update(string id, [FromBody] UpdateProductDto updateProductDto)
+        public async Task<ActionResult<ProductDto>> Update(string id, [FromForm] UpdateProductDto updateProductDto)
         {
-            if (id != updateProductDto.Id) return BadRequest("Product ID mismatch.");
+
+
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var updatedProduct = await _productService.UpdateProductAsync(updateProductDto);
+            var updatedProduct = await _productService.UpdateProductAsync(id, updateProductDto);
             if (updatedProduct == null) return NotFound();
 
-            var updatedProductDto = new ProductDto
-            {
-                Id = updatedProduct.Id,
-                Name = updatedProduct.Name,
-                Description = updatedProduct.Description,
-                Price = updatedProduct.Price,
-                Stock = updatedProduct.Stock
-            };
-
-            return Ok(updatedProductDto);
+            return Ok(updatedProduct);
         }
+
 
         // Delete a product by ID
         [HttpDelete("{id}")]
@@ -112,6 +109,19 @@ namespace backend.Controllers
 
             await _productService.DeleteProductAsync(id);
             return NoContent();
+        }
+
+        // Get products by vendorId
+        [HttpGet("vendor/{vendorId}")]
+        public async Task<ActionResult<IEnumerable<ProductDto>>> GetByVendorId(string vendorId)
+        {
+            var products = await _productService.GetProductsByVendorIdAsync(vendorId);
+            if (products == null || !products.Any())
+            {
+                return NotFound($"No products found for vendor ID {vendorId}");
+            }
+
+            return Ok(products);
         }
     }
 }

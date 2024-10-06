@@ -110,3 +110,18 @@ Content-Type: application/json
     }
   ]
 }
+
+
+##
+GET Vendor Orders
+GET http://localhost:5074/api/order/vendor/66fff2bfe110a42348af40a8/suborders
+
+##
+Vendor Feedback
+POST http://localhost:5074/api/vendor/6701670b05331b7306293477/feedback
+
+{
+    "CustomerId": "374c3814-2d9c-4983-8d21-12055f24418c",
+    "CustomerFeedbackText": "Great service",
+    "Rating":9
+}
