@@ -62,7 +62,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IOrderService,OrderService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 builder.Services.AddScoped<VendorService>();
@@ -73,22 +73,37 @@ builder.Services.AddAuthorization();
 // Add controllers or other services
 builder.Services.AddControllers();
 
+// CORS setup for development (Allow all origins)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
     {
-        builder.AllowAnyOrigin()
+        builder.AllowAnyOrigin()   // Allow requests from any origin
+               .AllowAnyMethod()   // Allow all HTTP methods (GET, POST, PUT, etc.)
+               .AllowAnyHeader();  // Allow all headers
+    });
+});
+
+// In production, replace "AllowAll" with a more restrictive CORS policy
+/*
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins", builder =>
+    {
+        builder.WithOrigins("https://yourdomain.com", "https://anotherdomain.com") // Allow specific domains
                .AllowAnyMethod()
                .AllowAnyHeader();
     });
 });
+*/
 
 var app = builder.Build();
 
 app.MapGet("/", () => "Hello World!");
 
 // Add endpoints, middleware, etc.
-app.UseCors("AllowAll");
+app.UseCors("AllowAll"); // Apply the "AllowAll" CORS policy
+
 app.UseAuthentication();
 app.UseAuthorization();
 
