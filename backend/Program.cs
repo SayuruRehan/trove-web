@@ -11,6 +11,11 @@ using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Register Cloudinary settings and service
+builder.Services.Configure<CloudinarySettings>(
+    builder.Configuration.GetSection("CloudinarySettings"));
+builder.Services.AddScoped<CloudinaryService>();
+
 // MongoDB configuration
 builder.Services.Configure<MongoDbSettings>(
     builder.Configuration.GetSection("MongoDbSettings"));
