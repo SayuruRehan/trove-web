@@ -63,3 +63,6 @@ D:\SR\SLIIT\Y4S1\SE4040 - EAD\Assignment\trove-web\backend\obj\Debug\net8.0\back
 D:\SR\SLIIT\Y4S1\SE4040 - EAD\Assignment\trove-web\backend\obj\Debug\net8.0\backend.genruntimeconfig.cache
 D:\SR\SLIIT\Y4S1\SE4040 - EAD\Assignment\trove-web\backend\obj\Debug\net8.0\ref\backend.dll
 D:\SR\SLIIT\Y4S1\SE4040 - EAD\Assignment\trove-web\backend\obj\Debug\net8.0\backend.sourcelink.json
+D:\SR\SLIIT\Y4S1\SE4040 - EAD\Assignment\trove-web\backend\bin\Debug\net8.0\CloudinaryDotNet.dll
+D:\SR\SLIIT\Y4S1\SE4040 - EAD\Assignment\trove-web\backend\bin\Debug\net8.0\dotenv.net.dll
+D:\SR\SLIIT\Y4S1\SE4040 - EAD\Assignment\trove-web\backend\bin\Debug\net8.0\Newtonsoft.Json.dll

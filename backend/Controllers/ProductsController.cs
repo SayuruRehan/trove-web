@@ -57,11 +57,12 @@ namespace backend.Controllers
 
         // Create a new product
         [HttpPost]
-        public async Task<ActionResult<ProductDto>> Create([FromBody] CreateProductDto createProductDto)
+        public async Task<ActionResult<ProductDto>> Create([FromForm] CreateProductDto createProductDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var result = await _productService.CreateProductAsync(createProductDto);
+
             if (result != null)
             {
                 var createdProductDto = new ProductDto
@@ -70,7 +71,8 @@ namespace backend.Controllers
                     Name = result.Name,
                     Description = result.Description,
                     Price = result.Price,
-                    Stock = result.Stock
+                    Stock = result.Stock,
+                    ImageUrl = result.ImageUrl
                 };
 
                 return CreatedAtAction(nameof(GetById), new { id = result.Id }, createdProductDto);

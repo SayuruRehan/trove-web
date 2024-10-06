@@ -9,13 +9,16 @@ namespace backend.Models
     {
         [BsonId]
         [BsonElement("_id"), BsonRepresentation(BsonType.ObjectId)]
-        public string? Id { get; set; } // Using string for compatibility with controller
+        public string? Id { get; set; } // Use string for ObjectId compatibility
 
         [BsonElement("name")]
         public string Name { get; set; }
 
         [BsonElement("description")]
         public string Description { get; set; }
+
+        [BsonElement("imageUrl")]
+        public string ImageUrl { get; set; } // Store the Cloudinary image URL
 
         [BsonElement("price")]
         public decimal Price { get; set; }
