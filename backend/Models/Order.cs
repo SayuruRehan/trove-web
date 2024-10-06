@@ -13,6 +13,10 @@ namespace backend.Models
         public string Id { get; set; }
 
         [Required]
+        [BsonElement("orderId")]
+        public string orderId { get; set;}
+        
+        [Required]
         [BsonElement("userId")]
         [BsonRepresentation(BsonType.ObjectId)]
         public string UserId { get; set; }  // Reference to the User
@@ -21,6 +25,15 @@ namespace backend.Models
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+        [Required]
+        [BsonElement("mobileNumber")]
+        [Phone(ErrorMessage = "Invalid mobile number format.")]
+        public string MobileNumber { get; set;} 
+
+        [Required]
+        [BsonElement("userName")]
+        public string userName { get; set;} 
+        
         [Required]
         [BsonElement("status")]
         [EnumDataType(typeof(OrderStatus))]
@@ -33,27 +46,11 @@ namespace backend.Models
 
         [Required]
         [BsonElement("shippingAddress")]
-        public Address ShippingAddress { get; set; }
+        public string ShippingAddress { get; set; }
 
         [Required]
         [BsonElement("orderItems")]
         public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
-    }
-
-    public class Address
-    {
-        [Required]
-        [BsonElement("street")]
-        public string Street { get; set; }
-
-        [Required]
-        [BsonElement("city")]
-        public string City { get; set; }
-
-        [Required]
-        [BsonElement("zip")]
-        [StringLength(10, ErrorMessage = "ZIP code must be up to 10 characters.")]
-        public string Zip { get; set; }
     }
 
     public class OrderItem

@@ -65,11 +65,22 @@ builder.Services.AddAuthorization();
 // Add controllers or other services
 builder.Services.AddControllers();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
 app.MapGet("/", () => "Hello World!");
 
 // Add endpoints, middleware, etc.
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 
