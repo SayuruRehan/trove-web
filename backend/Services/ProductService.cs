@@ -1,9 +1,7 @@
 using backend.DTOs;
 using backend.Interfaces;
 using backend.Models;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+
 
 namespace backend.Services
 {
@@ -29,9 +27,9 @@ namespace backend.Services
                 productDtos.Add(new ProductDto
                 {
                     Id = product.Id,
-                    Name = product.Name,
+                    ProductName = product.ProductName,
                     Description = product.Description,
-                    Price = product.Price,
+                    ProductPrice = product.ProductPrice,
                     Stock = product.Stock
                 });
             }
@@ -48,9 +46,9 @@ namespace backend.Services
             return new ProductDto
             {
                 Id = product.Id,
-                Name = product.Name,
+                ProductName = product.ProductName,
                 Description = product.Description,
-                Price = product.Price,
+                ProductPrice = product.ProductPrice,
                 Stock = product.Stock
             };
         }
@@ -67,11 +65,12 @@ namespace backend.Services
 
             var product = new Product
             {
-                Name = createProductDto.Name,
+                ProductName = createProductDto.ProductName,
                 Description = createProductDto.Description,
-                Price = createProductDto.Price,
+                ProductPrice = createProductDto.ProductPrice,
                 Stock = createProductDto.Stock,
-                ImageUrl = uploadResult.SecureUrl.ToString()
+                ImageUrl = uploadResult.SecureUrl.ToString(),
+                VendorId = createProductDto.VendorId
             };
 
             var createdProduct = await _productRepository.CreateProductAsync(product);
@@ -79,11 +78,12 @@ namespace backend.Services
             return new ProductDto
             {
                 Id = createdProduct.Id,
-                Name = createdProduct.Name,
+                ProductName = createdProduct.ProductName,
                 Description = createdProduct.Description,
-                Price = createdProduct.Price,
+                ProductPrice = createdProduct.ProductPrice,
                 Stock = createdProduct.Stock,
-                ImageUrl = createdProduct.ImageUrl
+                ImageUrl = createdProduct.ImageUrl,
+                VendorId = createdProduct.VendorId
             };
         }
 
@@ -96,9 +96,9 @@ namespace backend.Services
             var product = new Product
             {
                 Id = updateProductDto.Id,
-                Name = updateProductDto.Name,
+                ProductName = updateProductDto.ProductName,
                 Description = updateProductDto.Description,
-                Price = updateProductDto.Price,
+                ProductPrice = updateProductDto.ProductPrice,
                 Stock = updateProductDto.Stock
             };
 
@@ -106,14 +106,32 @@ namespace backend.Services
             return new ProductDto
             {
                 Id = updatedProduct.Id,
-                Name = updatedProduct.Name,
+                ProductName = updatedProduct.ProductName,
                 Description = updatedProduct.Description,
-                Price = updatedProduct.Price,
+                ProductPrice = updatedProduct.ProductPrice,
                 Stock = updatedProduct.Stock
             };
         }
 
         // Delete a product by ID
         public Task DeleteProductAsync(string id) => _productRepository.DeleteProductAsync(id);
+
+        // Retrieve products by vendorId
+        public async Task<IEnumerable<ProductDto>> GetProductsByVendorIdAsync(string vendorId)
+        {
+            var products = await _productRepository.GetProductsByVendorIdAsync(vendorId);
+            var productDtos = products.Select(product => new ProductDto
+            {
+                Id = product.Id,
+                ProductName = product.ProductName,
+                Description = product.Description,
+                ProductPrice = product.ProductPrice,
+                Stock = product.Stock,
+                ImageUrl = product.ImageUrl,
+                VendorId = product.VendorId
+            });
+
+            return productDtos;
+        }
     }
 }

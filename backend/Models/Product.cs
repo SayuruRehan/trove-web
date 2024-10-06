@@ -12,7 +12,7 @@ namespace backend.Models
         public string? Id { get; set; } // Use string for ObjectId compatibility
 
         [BsonElement("name")]
-        public string Name { get; set; }
+        public string ProductName { get; set; }
 
         [BsonElement("description")]
         public string Description { get; set; }
@@ -21,7 +21,7 @@ namespace backend.Models
         public string ImageUrl { get; set; } // Store the Cloudinary image URL
 
         [BsonElement("price")]
-        public decimal Price { get; set; }
+        public decimal ProductPrice { get; set; }
 
         [BsonElement("stock")]
         public int Stock { get; set; }

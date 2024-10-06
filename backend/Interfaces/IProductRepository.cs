@@ -12,5 +12,7 @@ namespace backend.Interfaces
         Task<Product> UpdateProductAsync(Product updateProductDto);
         Task DeleteProductAsync(string id);
         Task<Product> CreateProductAsync(Product product);
+
+        Task<IEnumerable<Product>> GetProductsByVendorIdAsync(string venderId);
     }
 }

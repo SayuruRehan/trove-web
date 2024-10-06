@@ -27,9 +27,9 @@ namespace backend.Controllers
             var productDtos = products.Select(p => new ProductDto
             {
                 Id = p.Id,
-                Name = p.Name,
+                ProductName = p.ProductName,
                 Description = p.Description,
-                Price = p.Price,
+                ProductPrice = p.ProductPrice,
                 Stock = p.Stock
             });
 
@@ -46,9 +46,9 @@ namespace backend.Controllers
             var productDto = new ProductDto
             {
                 Id = product.Id,
-                Name = product.Name,
+                ProductName = product.ProductName,
                 Description = product.Description,
-                Price = product.Price,
+                ProductPrice = product.ProductPrice,
                 Stock = product.Stock
             };
 
@@ -68,11 +68,12 @@ namespace backend.Controllers
                 var createdProductDto = new ProductDto
                 {
                     Id = result.Id,
-                    Name = result.Name,
+                    ProductName = result.ProductName,
                     Description = result.Description,
-                    Price = result.Price,
+                    ProductPrice = result.ProductPrice,
                     Stock = result.Stock,
-                    ImageUrl = result.ImageUrl
+                    ImageUrl = result.ImageUrl,
+                    VendorId = result.VendorId
                 };
 
                 return CreatedAtAction(nameof(GetById), new { id = result.Id }, createdProductDto);
@@ -94,9 +95,9 @@ namespace backend.Controllers
             var updatedProductDto = new ProductDto
             {
                 Id = updatedProduct.Id,
-                Name = updatedProduct.Name,
+                ProductName = updatedProduct.ProductName,
                 Description = updatedProduct.Description,
-                Price = updatedProduct.Price,
+                ProductPrice = updatedProduct.ProductPrice,
                 Stock = updatedProduct.Stock
             };
 
@@ -112,6 +113,19 @@ namespace backend.Controllers
 
             await _productService.DeleteProductAsync(id);
             return NoContent();
+        }
+
+        // Get products by vendorId
+        [HttpGet("vendor/{vendorId}")]
+        public async Task<ActionResult<IEnumerable<ProductDto>>> GetByVendorId(string vendorId)
+        {
+            var products = await _productService.GetProductsByVendorIdAsync(vendorId);
+            if (products == null || !products.Any())
+            {
+                return NotFound($"No products found for vendor ID {vendorId}");
+            }
+
+            return Ok(products);
         }
     }
 }

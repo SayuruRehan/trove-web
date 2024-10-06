@@ -107,5 +107,23 @@ namespace backend.Repositories
                 throw new ApplicationException($"Error deleting product with ID {id}", ex);
             }
         }
+
+        // Retrieve products by vendorId
+        public async Task<IEnumerable<Product>> GetProductsByVendorIdAsync(string vendorId)
+        {
+            if (string.IsNullOrEmpty(vendorId))
+                throw new ArgumentException("Invalid vendor ID.");
+
+            var filter = Builders<Product>.Filter.Eq(p => p.VendorId, vendorId);
+            try
+            {
+                return await _product.Find(filter).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Error retrieving products for vendor ID {vendorId}", ex);
+            }
+        }
+
     }
 }
