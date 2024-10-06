@@ -28,8 +28,8 @@ namespace backend.Services
                     VendorPhone = vendor.VendorPhone,
                     VendorAddress = vendor.VendorAddress,
                     VendorCity = vendor.VendorCity,
-                    CustomerFeedback = vendor.CustomerFeedback,
-                    Rating = vendor.Rating
+                    Products = vendor.Products,
+                    Feedbacks = vendor.Feedbacks
                 });
             }
             return vendorDtos;
@@ -50,8 +50,8 @@ namespace backend.Services
                 VendorPhone = vendor.VendorPhone,
                 VendorAddress = vendor.VendorAddress,
                 VendorCity = vendor.VendorCity,
-                CustomerFeedback = vendor.CustomerFeedback,
-                Rating = vendor.Rating
+                Products = vendor.Products,
+                Feedbacks = vendor.Feedbacks
             };
 
             return vendorDTO;
@@ -70,8 +70,8 @@ namespace backend.Services
                 VendorPhone = createVendorDTO.VendorPhone,
                 VendorAddress = createVendorDTO.VendorAddress,
                 VendorCity = createVendorDTO.VendorCity,
-                CustomerFeedback = new List<string>(),
-                Rating = new List<int>()
+                Products = new List<string>(),
+                Feedbacks = new List<CustomerFeedback>()
             };
             
             var createdVendor = await _vendorReopository.CreateVendorAsync(vendor);
@@ -86,8 +86,8 @@ namespace backend.Services
                 VendorPhone = createdVendor.VendorPhone,
                 VendorAddress = createdVendor.VendorAddress,
                 VendorCity = createdVendor.VendorCity,
-                CustomerFeedback = createdVendor.CustomerFeedback,
-                Rating = createdVendor.Rating
+                Products = createdVendor.Products,
+                Feedbacks = createdVendor.Feedbacks
             };
 
         }
@@ -106,8 +106,8 @@ namespace backend.Services
                 VendorPhone = updateVendorDTO.VendorPhone,
                 VendorAddress = updateVendorDTO.VendorAddress,
                 VendorCity = updateVendorDTO.VendorCity,
-                CustomerFeedback = updateVendorDTO.CustomerFeedback,
-                Rating = updateVendorDTO.Rating
+                Products = updateVendorDTO.Products,
+                Feedbacks = updateVendorDTO.Feedbacks
             };
 
             var updatedVendor = await _vendorReopository.UpdateVendorAsync(vendor);
@@ -122,8 +122,8 @@ namespace backend.Services
                 VendorPhone = updatedVendor.VendorPhone,
                 VendorAddress = updatedVendor.VendorAddress,
                 VendorCity = updatedVendor.VendorCity,
-                CustomerFeedback = updatedVendor.CustomerFeedback,
-                Rating = updatedVendor.Rating
+                Products = updatedVendor.Products,
+                Feedbacks = updatedVendor.Feedbacks
             };
         }
 

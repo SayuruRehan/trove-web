@@ -5,10 +5,12 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDbGenericRepository.Attributes;
 
-namespace backend.Models{
+namespace backend.Models
+{
 
     [CollectionName("Vendors")]
-    public class Vendor{
+    public class Vendor
+    {
 
         // Explicitly say this is the primary key for the MongoDB document
         [BsonId] 
@@ -31,8 +33,10 @@ namespace backend.Models{
 
         public required string VendorCity {get; set;}
 
-        public List<string> CustomerFeedback {get; set;}
+        public List<string> Products {get; set;} = new List<string>();
 
-        public List<int> Rating {get; set;}
+        [BsonElement("CustomerFeedback")]
+        public List<CustomerFeedback> Feedbacks {get; set;} = new List<CustomerFeedback>();
     }
 }
+

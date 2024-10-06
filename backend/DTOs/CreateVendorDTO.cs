@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using backend.Models;
 
 namespace backend.DTOs
 {
@@ -23,8 +24,8 @@ namespace backend.DTOs
         [StringLength(100, ErrorMessage ="City cannot exceed 100 characters")]
         public required string VendorCity {get; set;}
 
-        public List<string> CustomerFeedback {get; set;}= new List<string>();
+        public List<string> Products {get; set;} = new List<string>();
 
-        public List<int> Rating {get; set;} = new List<int>();
+        public List<CustomerFeedback> Feedbacks {get; set;} = new List<CustomerFeedback>();
     }
 }

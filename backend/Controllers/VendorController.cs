@@ -32,8 +32,8 @@ namespace backend.Controllers
             VendorPhone = v.VendorPhone,
             VendorAddress = v.VendorAddress,
             VendorCity = v.VendorCity,
-            CustomerFeedback = v.CustomerFeedback,
-            Rating = v.Rating
+            Products = v.Products,
+            Feedbacks = v.Feedbacks
         });
         
         return Ok(vendorDtos); // Return 200 ok with list of VendorDTO
@@ -57,8 +57,8 @@ namespace backend.Controllers
             VendorPhone = vendor.VendorPhone,
             VendorAddress = vendor.VendorAddress,
             VendorCity = vendor.VendorCity,
-            CustomerFeedback = vendor.CustomerFeedback,
-            Rating = vendor.Rating
+            Products = vendor.Products,
+            Feedbacks = vendor.Feedbacks
         };
 
         return Ok(singleVendorDTO);
@@ -115,8 +115,8 @@ namespace backend.Controllers
             VendorPhone = updatedVendor.VendorPhone,
             VendorAddress = updatedVendor.VendorAddress,
             VendorCity = updatedVendor.VendorCity,
-            CustomerFeedback = updatedVendor.CustomerFeedback,
-            Rating = updatedVendor.Rating
+            Products = updatedVendor.Products,
+            Feedbacks = updatedVendor.Feedbacks
         };
 
         return Ok(updatedVendorDTO);  
