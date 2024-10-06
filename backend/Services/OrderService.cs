@@ -46,12 +46,11 @@ namespace backend.Services
             var order = new Order
             {
                 UserId = createOrderDto.UserId,
-                ShippingAddress = new Address
-                {
-                    Street = createOrderDto.ShippingAddress.Street,
-                    City = createOrderDto.ShippingAddress.City,
-                    Zip = createOrderDto.ShippingAddress.Zip
-                },
+                orderId = createOrderDto.orderId,
+                userName = createOrderDto.userName,
+                TotalAmount = createOrderDto.TotalAmount,
+                ShippingAddress = createOrderDto.ShippingAddress,
+                MobileNumber = createOrderDto.MobileNumber,
                 OrderItems = createOrderDto.OrderItems.Select(oi => new OrderItem
                 {
                     ProductId = oi.ProductId,
@@ -80,12 +79,9 @@ namespace backend.Services
 
             // Update the relevant fields
             order.Status = updateOrderDto.Status;
-            order.ShippingAddress = new Address
-            {
-                Street = updateOrderDto.ShippingAddress.Street,
-                City = updateOrderDto.ShippingAddress.City,
-                Zip = updateOrderDto.ShippingAddress.Zip
-            };
+            order.userName = updateOrderDto.userName;
+            order.ShippingAddress = updateOrderDto.ShippingAddress;
+            order.MobileNumber = updateOrderDto.MobileNumber;
             order.OrderItems = updateOrderDto.OrderItems.Select(oi => new OrderItem
             {
                 ProductId = oi.ProductId,
@@ -117,15 +113,13 @@ namespace backend.Services
             {
                 Id = order.Id,
                 UserId = order.UserId,
+                orderId = order.orderId,
+                userName = order.userName,
                 CreatedAt = order.CreatedAt,
-                Status = order.Status,
+                status = order.Status,
                 TotalAmount = order.TotalAmount,
-                ShippingAddress = new AddressDto
-                {
-                    Street = order.ShippingAddress.Street,
-                    City = order.ShippingAddress.City,
-                    Zip = order.ShippingAddress.Zip
-                },
+                ShippingAddress = order.ShippingAddress,
+                MobileNumber = order.MobileNumber,
                 OrderItems = order.OrderItems.Select(oi => new OrderItemDto
                 {
                     ProductId = oi.ProductId,
