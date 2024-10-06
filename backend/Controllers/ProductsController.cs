@@ -26,7 +26,10 @@ namespace backend.Controllers
                 ProductName = p.ProductName,
                 Description = p.Description,
                 ProductPrice = p.ProductPrice,
-                Stock = p.Stock
+                Stock = p.Stock,
+                ImageUrl = p.ImageUrl,
+                VendorId = p.VendorId,
+                VendorName = p.VendorName
             });
 
             return Ok(productDtos);
@@ -45,7 +48,10 @@ namespace backend.Controllers
                 ProductName = product.ProductName,
                 Description = product.Description,
                 ProductPrice = product.ProductPrice,
-                Stock = product.Stock
+                Stock = product.Stock,
+                ImageUrl = product.ImageUrl,
+                VendorId = product.VendorId,
+                VendorName = product.VendorName
             };
 
             return Ok(productDto);
@@ -69,7 +75,8 @@ namespace backend.Controllers
                     ProductPrice = result.ProductPrice,
                     Stock = result.Stock,
                     ImageUrl = result.ImageUrl,
-                    VendorId = result.VendorId
+                    VendorId = result.VendorId,
+                    VendorName = result.VendorName
                 };
 
                 return CreatedAtAction(nameof(GetById), new { id = result.Id }, createdProductDto);

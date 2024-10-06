@@ -1,5 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+
 namespace backend.Models
 {
     public class CustomerFeedback
@@ -10,5 +11,6 @@ namespace backend.Models
         public required string CustomerId {get; set;}
         public required string CustomerFeedbackText {get; set;}
         public required int Rating {get; set;}
+
     }
 }

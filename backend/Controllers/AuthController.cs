@@ -49,4 +49,22 @@ public class AuthController : ControllerBase
         await _authService.Logout();
         return Ok(new { message = "User logged out successfully!" });
     }
+
+    [HttpPut("update/{userId}")]
+    [Authorize]
+    public async Task<IActionResult> UpdateUser(Guid userId, UserUpdateDTO userUpdateDTO)
+    {
+
+    var result = await _authService.UpdateUser(userId, userUpdateDTO);
+
+    if (result.Succeeded)
+    {
+        return Ok(new { message = "User updated successfully!" });
+    }
+
+    return BadRequest(result.Errors);
+
+    }
+
+    
 }

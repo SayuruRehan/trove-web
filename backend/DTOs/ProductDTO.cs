@@ -12,9 +12,11 @@ namespace backend.DTOs
 
         public decimal ProductPrice { get; set; }
 
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
 
         public string VendorId { get; set; }
+
+        public string VendorName { get; set; }
 
         public int Stock { get; set; }
     }
@@ -39,6 +41,8 @@ namespace backend.DTOs
         [Required(ErrorMessage = "Vender id is required.")]
         public string VendorId { get; set; }
 
+        public string? VendorName { get; set; }
+
         public IFormFile? Image { get; set; }
     }
 
@@ -58,6 +62,8 @@ namespace backend.DTOs
         [Required(ErrorMessage = "Stock is required.")]
         [Range(0, int.MaxValue, ErrorMessage = "Stock cannot be negative.")]
         public int Stock { get; set; } // Required for update
+
+        public string? VendorName { get; set; }
 
         public IFormFile? Image { get; set; } // Optional: only provide if there's a new image to upload
     }

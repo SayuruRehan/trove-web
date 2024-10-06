@@ -9,5 +9,7 @@ namespace backend.Interfaces
         Task<string> Login(UserLoginDTO userLoginDTO);
 
         Task Logout();
+
+        Task<IdentityResult> UpdateUser(Guid userId, UserUpdateDTO userUpdateDTO);
     }
 }

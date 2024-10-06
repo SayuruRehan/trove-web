@@ -20,5 +20,8 @@ namespace backend.DTOs
 
         [Required]
         public string Password { get; set; }
+
+        [Required]
+        public string Status { get; set; }
     }
 }

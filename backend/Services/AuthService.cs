@@ -31,7 +31,8 @@ namespace backend.Services
                 Lastname = userRegisterDTO.Lastname,
                 Email = userRegisterDTO.Email,
                 UserName = userRegisterDTO.Email,
-                Phone = userRegisterDTO.Phone
+                Phone = userRegisterDTO.Phone,
+                Status = Enum.TryParse(userRegisterDTO.Status, out UserStatus status) ? status : UserStatus.Deactive
             };
 
             return await _userRepository.CreateUserAsync(user, userRegisterDTO.Password);
@@ -72,5 +73,27 @@ namespace backend.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
+        public async Task<IdentityResult> UpdateUser(Guid userId, UserUpdateDTO userUpdateDTO)
+        {
+            var user = await _userRepository.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "User not found." });
+            }
+
+            user.Firstname = userUpdateDTO.Firstname ?? user.Firstname;
+            user.Lastname = userUpdateDTO.Lastname ?? user.Lastname;
+            user.Phone = userUpdateDTO.Phone ?? user.Phone;
+
+            if (Enum.TryParse(userUpdateDTO.Status, true, out UserStatus status))
+            {
+                user.Status = status;
+            }
+
+            return await _userRepository.UpdateUserAsync(user);
+        }
+
     }
 }

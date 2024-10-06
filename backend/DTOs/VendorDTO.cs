@@ -16,6 +16,10 @@ namespace backend.DTOs
 
         public required string VendorCity {get; set;}
 
+        public bool IsActive {get; set;} = false;
+
+        public string HashedPassword {get; set;}
+        
         public List<string> Products {get; set;} = new List<string>();
 
         public List<CustomerFeedback> Feedbacks {get; set;} = new List<CustomerFeedback>();

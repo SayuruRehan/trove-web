@@ -24,6 +24,8 @@ namespace backend.DTOs
         [StringLength(100, ErrorMessage ="City cannot exceed 100 characters")]
         public required string VendorCity {get; set;}
 
+        public bool IsActive {get; set;} = false;
+
         public List<string> Products {get; set;} = new List<string>();
 
         public List<CustomerFeedback> Feedbacks {get; set;} = new List<CustomerFeedback>();

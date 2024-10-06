@@ -29,6 +29,7 @@ namespace backend.Models
         [BsonElement("vendorId")]
         [BsonRepresentation(BsonType.ObjectId)]
         public string VendorId { get; set; }
+        public string VendorName { get; set; }
 
         [BsonElement("createdAt")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

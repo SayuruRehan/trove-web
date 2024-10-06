@@ -30,7 +30,10 @@ namespace backend.Services
                     ProductName = product.ProductName,
                     Description = product.Description,
                     ProductPrice = product.ProductPrice,
-                    Stock = product.Stock
+                    Stock = product.Stock,
+                    ImageUrl = product.ImageUrl,
+                    VendorId = product.VendorId,
+                    VendorName = product.VendorName
                 });
             }
             return productDtos;
@@ -49,32 +52,49 @@ namespace backend.Services
                 ProductName = product.ProductName,
                 Description = product.Description,
                 ProductPrice = product.ProductPrice,
-                Stock = product.Stock
+                Stock = product.Stock,
+                VendorId = product.VendorId,
+                ImageUrl = product.ImageUrl,
+                VendorName = product.VendorName
             };
         }
 
         // Create a new product
         public async Task<ProductDto> CreateProductAsync(CreateProductDto createProductDto)
         {
-            var uploadResult = await _cloudinaryService.UploadImageAsync(createProductDto.Image);
+            string imageUrl = null;
 
-            if (uploadResult.Error != null)
+            // Only attempt to upload if the image is provided
+            if (createProductDto.Image != null && createProductDto.Image.Length > 0)
             {
-                throw new Exception(uploadResult.Error.Message);
+                var uploadResult = await _cloudinaryService.UploadImageAsync(createProductDto.Image);
+
+                // Handle potential errors from the upload
+                if (uploadResult.Error != null)
+                {
+                    throw new Exception(uploadResult.Error.Message);
+                }
+
+                // Set the secure URL from the uploaded image
+                imageUrl = uploadResult.SecureUrl.ToString();
             }
 
+            // Create the product object
             var product = new Product
             {
                 ProductName = createProductDto.ProductName,
                 Description = createProductDto.Description,
                 ProductPrice = createProductDto.ProductPrice,
                 Stock = createProductDto.Stock,
-                ImageUrl = uploadResult.SecureUrl.ToString(),
-                VendorId = createProductDto.VendorId
+                ImageUrl = imageUrl,  // Only set the image URL if an image was uploaded
+                VendorId = createProductDto.VendorId,
+                VendorName = createProductDto.VendorName
             };
 
+            // Save the product in the repository
             var createdProduct = await _productRepository.CreateProductAsync(product);
 
+            // Return the created product as a DTO
             return new ProductDto
             {
                 Id = createdProduct.Id,
@@ -82,8 +102,9 @@ namespace backend.Services
                 Description = createdProduct.Description,
                 ProductPrice = createdProduct.ProductPrice,
                 Stock = createdProduct.Stock,
-                ImageUrl = createdProduct.ImageUrl,
-                VendorId = createdProduct.VendorId
+                ImageUrl = createdProduct.ImageUrl,  // This will be null if no image was uploaded
+                VendorId = createdProduct.VendorId,
+                VendorName = createdProduct.VendorName
             };
         }
 
@@ -133,7 +154,8 @@ namespace backend.Services
                 ProductPrice = updateProductDto.ProductPrice,
                 Stock = updateProductDto.Stock,
                 ImageUrl = imageUrl,
-                VendorId = existingProduct.VendorId
+                VendorId = existingProduct.VendorId,
+                VendorName = existingProduct.VendorName,
             };
 
             // Step 4: Update the product in the repository
@@ -148,7 +170,8 @@ namespace backend.Services
                 ProductPrice = updatedProduct.ProductPrice,
                 Stock = updatedProduct.Stock,
                 ImageUrl = updatedProduct.ImageUrl,
-                VendorId = updatedProduct.VendorId
+                VendorId = updatedProduct.VendorId,
+                VendorName = updatedProduct.VendorName
             };
         }
 
@@ -167,12 +190,13 @@ namespace backend.Services
                 ProductPrice = product.ProductPrice,
                 Stock = product.Stock,
                 ImageUrl = product.ImageUrl,
-                VendorId = product.VendorId
+                VendorId = product.VendorId,
+                VendorName = product.VendorName
             });
 
             return productDtos;
         }
-        private string GetImagePublicId(string imageUrl)
+        private static string GetImagePublicId(string imageUrl)
         {
             var uri = new Uri(imageUrl);
             var segments = uri.AbsolutePath.Split('/');
