@@ -8,6 +8,7 @@ namespace backend.DTOs
         public string Firstname { get; set; }
         public string Lastname { get; set; }
         public string Phone { get; set; }
+        public string Role { get; set; }
 
         [EnumDataType(typeof(UserStatus))]
         public string Status { get; set; }
