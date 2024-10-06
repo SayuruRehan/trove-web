@@ -97,15 +97,15 @@ namespace backend.Models
     public enum OrderStatus
     {
         Pending,
-        PartiallyFulfilled,
-        Fulfilled
+        PartiallyDelivered,
+        Cancelled,
+        Delivered
     }
 
     public enum FulfillmentStatusEnum
     {
         Pending,
-        Fulfilled,
+        Delivered,
         Shipped,
-        Cancelled
     }
 }

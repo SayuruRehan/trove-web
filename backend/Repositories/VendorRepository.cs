@@ -28,17 +28,15 @@ namespace backend.Repositories{
         }
 
         // Get a particular Vendor
-        public async Task<Vendor> GetVendorByIdAsync(string Id)
+        public async Task<Vendor> GetVendorByIdAsync(string id)
         {
 
-            if(string.IsNullOrEmpty(Id))
-            {
+            if(string.IsNullOrEmpty(id))
                 throw new ArgumentException("Vendor Id not valid");
-            }
 
             try
             {
-                var filteredResult = Builders<Vendor>.Filter.Eq( v => v.Id, Id);
+                var filteredResult = Builders<Vendor>.Filter.Eq( v => v.Id, id);
 
                 // Retrives the first document that matches the filter
                 return await _vendor.Find(filteredResult).FirstOrDefaultAsync();
@@ -72,15 +70,11 @@ namespace backend.Repositories{
         public async Task<Vendor> UpdateVendorAsync(Vendor vendor)
         {
             if(vendor == null)
-            {
-                throw new ArgumentException("Vendor not found");
-            }
+                throw new ArgumentException("Vendor not found");          
 
-            if(string.IsNullOrEmpty("Id"))
-            {
+            if(string.IsNullOrEmpty(vendor.Id))
                 throw new ArgumentException("Invalid Vendor Id!");
-            }
-
+            
             try
             {
                 var filteredResult = Builders<Vendor>.Filter.Eq(v => v.Id, vendor.Id);
@@ -96,19 +90,18 @@ namespace backend.Repositories{
         }
 
         // Delete existing Vendor
-        public async Task DeleteVendorAsync(string Id){
+        public async Task DeleteVendorAsync(string id){
 
-            ArgumentException.ThrowIfNullOrEmpty(Id);
+            ArgumentException.ThrowIfNullOrEmpty(id);
 
             try
             {
-                var filteredResult = Builders<Vendor>.Filter.Eq(v => v.Id, Id);
+                var filteredResult = Builders<Vendor>.Filter.Eq(v => v.Id, id);
                 var deleteResult = await _vendor.DeleteOneAsync(filteredResult);
 
                 if (deleteResult.DeletedCount == 0)
-                {
                     throw new KeyNotFoundException("No Vendor deleted eith the particular Id");
-                }
+                
             }
             catch (Exception ex)
             {

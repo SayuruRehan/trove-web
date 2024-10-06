@@ -1,6 +1,7 @@
 using backend.DTOs;
 using backend.Interfaces;
 using backend.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace backend.Services
 {
@@ -52,6 +53,8 @@ namespace backend.Services
 
         public async Task<VendorDTO> CreateVendorDTOAsync(CreateVendorDTO createVendorDTO)
         {
+            // This needed because repository layer works with actual Vendor Model
+            
             var vendor = new Vendor
             {
                 VendorName = createVendorDTO.VendorName,
@@ -81,20 +84,24 @@ namespace backend.Services
 
         public async Task<VendorDTO> UpdateVendorDTOAsync(UpdateVendorDTO updateVendorDTO)
         {
-            var updatedVendor = await _vendorReopository.GetVendorByIdAsync(updateVendorDTO.Id);
+            if(string.IsNullOrEmpty(updateVendorDTO.Id)) throw new ArgumentException("Invalid Id");
 
-            updatedVendor.VendorName = updateVendorDTO.VendorName;
-            updatedVendor.VendorEmail = updateVendorDTO.VendorEmail;
-            updatedVendor.VendorPhone = updateVendorDTO.VendorPhone;
-            updatedVendor.VendorAddress = updateVendorDTO.VendorAddress;
-            updatedVendor.VendorCity = updateVendorDTO.VendorCity;
+            var vendor = new Vendor
+            {
+                Id = updateVendorDTO.Id,
+                VendorName = updateVendorDTO.VendorName,
+                VendorEmail = updateVendorDTO.VendorEmail,
+                VendorPhone = updateVendorDTO.VendorPhone,
+                VendorAddress = updateVendorDTO.VendorAddress,
+                VendorCity = updateVendorDTO.VendorCity
+            };
 
-            await _vendorReopository.UpdateVendorAsync(updatedVendor);
+            var updatedVendor = await _vendorReopository.UpdateVendorAsync(vendor);
 
             // Map updated vendor to VendorDTO to response
 
-            var vendorDTO = new VendorDTO
-            {
+            return new VendorDTO
+            {   
                 Id = updatedVendor.Id,
                 VendorName = updatedVendor.VendorName,
                 VendorEmail = updatedVendor.VendorEmail,
@@ -102,8 +109,6 @@ namespace backend.Services
                 VendorAddress = updatedVendor.VendorAddress,
                 VendorCity = updatedVendor.VendorCity
             };
-
-            return vendorDTO;
         }
 
         // Deleting a paticular Vendor
