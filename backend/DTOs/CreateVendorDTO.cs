@@ -13,8 +13,7 @@ namespace backend.DTOs
         public string VendorEmail {get; set;}
 
         [Required(ErrorMessage = "Pohne number is required")]
-        [RegularExpression(@"^\+?[1-9]\d{1, 14}$", ErrorMessage ="Invalid phone number format")]
-        public int VendorPhone {get; set;}
+        public string VendorPhone {get; set;}
 
         [Required(ErrorMessage = "Address is required")]
         [StringLength(200, ErrorMessage ="Address cannot exceed 200 characters")]
@@ -23,5 +22,11 @@ namespace backend.DTOs
         [Required(ErrorMessage = "City name is required")]
         [StringLength(100, ErrorMessage ="City cannot exceed 100 characters")]
         public string VendorCity {get; set;}
+
+        [StringLength(300, ErrorMessage ="Feedback cannot exceed 300 characters")]
+        public string CustomerFeedback {get; set;}
+
+        [Range(1, 10, ErrorMessage="Rating must be betweeb 1 and 10")]
+        public int Rating {get; set;}
     }
 }

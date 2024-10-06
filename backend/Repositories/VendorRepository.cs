@@ -94,18 +94,19 @@ namespace backend.Repositories{
 
             ArgumentException.ThrowIfNullOrEmpty(id);
 
+            var filteredResult = Builders<Vendor>.Filter.Eq(v => v.Id, id);
+
             try
             {
-                var filteredResult = Builders<Vendor>.Filter.Eq(v => v.Id, id);
                 var deleteResult = await _vendor.DeleteOneAsync(filteredResult);
 
                 if (deleteResult.DeletedCount == 0)
-                    throw new KeyNotFoundException("No Vendor deleted eith the particular Id");
+                    throw new KeyNotFoundException("No Vendor deleted with the particular Id");
                 
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error deleting paticular product", ex);
+                throw new ApplicationException("Error deleting paticular vendor", ex);
             }
 
         }

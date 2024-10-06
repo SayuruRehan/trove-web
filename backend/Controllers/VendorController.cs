@@ -12,7 +12,7 @@ namespace backend.Controllers
     
     [Route("api/[controller]")] // Specifies the route template for controller
     [ApiController] // Automatic model validation enabled
-    [Authorize(Roles = "Administrator")]
+    // [Authorize(Roles = "Administrator")]
 
     public class VendorController(VendorService vendorService) : ControllerBase
     {
@@ -24,24 +24,44 @@ namespace backend.Controllers
     public async Task<ActionResult<IEnumerable<VendorDTO>>> GetAllVendors()
     {
         var vendors = await _vendorService.GetAllVendorsDTOAsync();
-
-        if(vendors == null || vendors.Count == 0)
-            return BadRequest("No Vendors found!");
+        var vendorDtos = vendors.Select(v => new VendorDTO
+        {
+            Id = v.Id,
+            VendorName = v.VendorName,
+            VendorEmail = v.VendorEmail,
+            VendorPhone = v.VendorPhone,
+            VendorAddress = v.VendorAddress,
+            VendorCity = v.VendorCity,
+            CustomerFeedback = v.CustomerFeedback,
+            Rating = v.Rating
+        });
         
-        return Ok(vendors); // Return 200 ok with list of VendorDTO
+        return Ok(vendorDtos); // Return 200 ok with list of VendorDTO
     }
 
     // Get paticular Vendor
 
     [HttpGet("{id}")]
+    [ActionName("GetVendorById")]
     public async Task<ActionResult<VendorDTO>> GetVendorById(string id)
     {
         var vendor = await _vendorService.GetVendorByIdDTOAsync(id);
 
-        if(vendor == null) 
-            return BadRequest("Paticular Vendor not found!");
+        if(vendor == null) return NotFound();
 
-        return Ok(vendor);
+        var singleVendorDTO = new VendorDTO
+        {
+            Id = vendor.Id,
+            VendorName = vendor.VendorName,
+            VendorEmail = vendor.VendorEmail,
+            VendorPhone = vendor.VendorPhone,
+            VendorAddress = vendor.VendorAddress,
+            VendorCity = vendor.VendorCity,
+            CustomerFeedback = vendor.CustomerFeedback,
+            Rating = vendor.Rating
+        };
+
+        return Ok(singleVendorDTO);
     }
 
     // Create new Vendor
@@ -65,7 +85,7 @@ namespace backend.Controllers
                 VendorCity = newVendor.VendorCity
             };
 
-            return CreatedAtAction(nameof(GetVendorById), new{ id = newVendor.Id }, createdVendorDTO);
+            return CreatedAtAction(nameof(GetVendorById), new { id = newVendor.Id }, createdVendorDTO);
         }
 
         return BadRequest("Vendor creation failed!");
@@ -94,10 +114,12 @@ namespace backend.Controllers
             VendorEmail = updatedVendor.VendorEmail,
             VendorPhone = updatedVendor.VendorPhone,
             VendorAddress = updatedVendor.VendorAddress,
-            VendorCity = updatedVendor.VendorCity
+            VendorCity = updatedVendor.VendorCity,
+            CustomerFeedback = updatedVendor.CustomerFeedback,
+            Rating = updatedVendor.Rating
         };
 
-        return Ok();  
+        return Ok(updatedVendorDTO);  
     }
 
     // Delete existing Vendor
@@ -111,7 +133,9 @@ namespace backend.Controllers
         if(result == null) NotFound();
 
         await _vendorService.DeleteVendorDTOAsync(id);
-        return NoContent(); // 204 successfully deleted, no response body
+        //return NoContent(); // 204 successfully deleted, no response body
+
+        return Ok(new {message = "Vendor successfully deleted!"});
     }
 
     }

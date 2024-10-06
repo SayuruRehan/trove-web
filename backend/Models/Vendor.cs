@@ -8,7 +8,7 @@ using MongoDbGenericRepository.Attributes;
 namespace backend.Models{
 
     [CollectionName("Vendors")]
-    public class Vendor : MongoIdentityUser<Guid>{
+    public class Vendor{
 
         // Explicitly say this is the primary key for the MongoDB document
         [BsonId] 
@@ -25,11 +25,15 @@ namespace backend.Models{
         public string VendorEmail {get; set;}
 
         [PersonalData]
-        public int VendorPhone {get; set;}
+        public string VendorPhone {get; set;}
 
         public string VendorAddress {get; set;}
 
         public string VendorCity {get; set;}
+
+        public string CustomerFeedback {get; set;}
+
+        public int Rating {get; set;}
     }
 }
 

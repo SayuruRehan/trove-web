@@ -51,8 +51,19 @@ namespace backend.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(string id)
         {
-            await _orderService.DeleteOrderAsync(id);
-            return NoContent();
+            try
+            {
+                await _orderService.DeleteOrderAsync(id);
+                return Ok(new { Message = $"Order with ID {id} has been deleted successfully." });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { Error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Error = "An unexpected error occurred.", Details = ex.Message });
+            }
         }
     }
 }

@@ -8,10 +8,14 @@ namespace backend.DTOs
 
         public string VendorEmail {get; set;}
 
-        public int VendorPhone {get; set;}
+        public string VendorPhone {get; set;}
 
         public string VendorAddress {get; set;}
 
         public string VendorCity {get; set;}
+
+        public string CustomerFeedback {get; set;}
+
+        public int Rating {get; set;}
     }
 }

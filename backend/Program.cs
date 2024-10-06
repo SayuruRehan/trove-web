@@ -65,6 +65,9 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IOrderService,OrderService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
+builder.Services.AddScoped<VendorService>();
+builder.Services.AddScoped<IVendorRepository, VendorRepository>();
+
 builder.Services.AddAuthorization();
 
 // Add controllers or other services

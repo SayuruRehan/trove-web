@@ -6,12 +6,12 @@ namespace backend.Interfaces
     {
         Task<IEnumerable<Vendor>> GetAllVendorsAsync();
 
-        Task<Vendor> GetVendorByIdAsync(string Id);
+        Task<Vendor> GetVendorByIdAsync(string id);
 
         Task<Vendor> CreateVendorAsync(Vendor vendor);
 
-        Task<Vendor> UpdateVendorAsync(Vendor vendorDTO);
+        Task<Vendor> UpdateVendorAsync(Vendor vendor);
 
-        Task DeleteVendorAsync(string Id);
+        Task DeleteVendorAsync(string id);
     }
 }

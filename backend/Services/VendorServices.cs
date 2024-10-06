@@ -13,21 +13,26 @@ namespace backend.Services
 
         // Get All Vendors
 
-        public async Task<List<VendorDTO>> GetAllVendorsDTOAsync()
+        public async Task<IEnumerable<VendorDTO>> GetAllVendorsDTOAsync()
         {
             var vendorsResult = await _vendorReopository.GetAllVendorsAsync();
 
-            return vendorsResult.Select(vendor => new VendorDTO
+            var vendorDtos = new List<VendorDTO>();
+            foreach(var vendor in vendorsResult)
             {
-                Id = vendor.Id,
-                VendorName = vendor.VendorName,
-                VendorEmail = vendor.VendorEmail,
-                VendorPhone = vendor.VendorPhone,
-                VendorAddress = vendor.VendorAddress,
-                VendorCity = vendor.VendorCity
-
-            }).ToList();
-
+                vendorDtos.Add(new VendorDTO
+                {
+                    Id = vendor.Id,
+                    VendorName = vendor.VendorName,
+                    VendorEmail = vendor.VendorEmail,
+                    VendorPhone = vendor.VendorPhone,
+                    VendorAddress = vendor.VendorAddress,
+                    VendorCity = vendor.VendorCity,
+                    CustomerFeedback = vendor.CustomerFeedback,
+                    Rating = vendor.Rating
+                });
+            }
+            return vendorDtos;
         }
 
         // Get paticular Vendor
@@ -35,6 +40,7 @@ namespace backend.Services
         public async Task<VendorDTO> GetVendorByIdDTOAsync(string Id)
         {
             var vendor = await _vendorReopository.GetVendorByIdAsync(Id);
+            if(vendor == null) return null;
 
             var vendorDTO = new VendorDTO
             {
@@ -43,7 +49,9 @@ namespace backend.Services
                 VendorEmail = vendor.VendorEmail,
                 VendorPhone = vendor.VendorPhone,
                 VendorAddress = vendor.VendorAddress,
-                VendorCity = vendor.VendorCity
+                VendorCity = vendor.VendorCity,
+                CustomerFeedback = vendor.CustomerFeedback,
+                Rating = vendor.Rating
             };
 
             return vendorDTO;
@@ -64,20 +72,20 @@ namespace backend.Services
                 VendorCity = createVendorDTO.VendorCity
             };
             
-            await _vendorReopository.CreateVendorAsync(vendor);
+            var createdVendor = await _vendorReopository.CreateVendorAsync(vendor);
 
             // Then map the vendor model to vendor dto to pass it to vendor controller
 
-            var vendorDTO = new VendorDTO
+            return new VendorDTO
             {
-                VendorName = vendor.VendorName,
-                VendorEmail = vendor.VendorEmail,
-                VendorPhone = vendor.VendorPhone,
-                VendorAddress = vendor.VendorAddress,
-                VendorCity = vendor.VendorCity
+                Id = createdVendor.Id,
+                VendorName = createdVendor.VendorName,
+                VendorEmail = createdVendor.VendorEmail,
+                VendorPhone = createdVendor.VendorPhone,
+                VendorAddress = createdVendor.VendorAddress,
+                VendorCity = createdVendor.VendorCity
             };
 
-            return vendorDTO;
         }
 
         // Update existing Vendor
@@ -93,7 +101,9 @@ namespace backend.Services
                 VendorEmail = updateVendorDTO.VendorEmail,
                 VendorPhone = updateVendorDTO.VendorPhone,
                 VendorAddress = updateVendorDTO.VendorAddress,
-                VendorCity = updateVendorDTO.VendorCity
+                VendorCity = updateVendorDTO.VendorCity,
+                CustomerFeedback = updateVendorDTO.CustomerFeedback,
+                Rating = updateVendorDTO.Rating
             };
 
             var updatedVendor = await _vendorReopository.UpdateVendorAsync(vendor);
@@ -107,13 +117,15 @@ namespace backend.Services
                 VendorEmail = updatedVendor.VendorEmail,
                 VendorPhone = updatedVendor.VendorPhone,
                 VendorAddress = updatedVendor.VendorAddress,
-                VendorCity = updatedVendor.VendorCity
+                VendorCity = updatedVendor.VendorCity,
+                CustomerFeedback = updatedVendor.CustomerFeedback,
+                Rating = updatedVendor.Rating
             };
         }
 
         // Deleting a paticular Vendor
 
-        public  Task DeleteVendorDTOAsync(string Id) => _vendorReopository.DeleteVendorAsync(Id);
+        public  Task DeleteVendorDTOAsync(string id) => _vendorReopository.DeleteVendorAsync(id);
         
     }
 }
