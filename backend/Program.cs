@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using AspNetCore.Identity.MongoDbCore.Models;
 using MongoDB.Bson;
+using backend.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,6 +63,7 @@ builder.Services.AddAuthentication(x =>
 // Register your services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
@@ -70,6 +72,11 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<VendorService>();
 builder.Services.AddScoped<IVendorRepository, VendorRepository>();
+
+// Register Notification services
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+
 
 builder.Services.AddAuthorization();
 

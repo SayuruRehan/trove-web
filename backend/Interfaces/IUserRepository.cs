@@ -14,5 +14,6 @@ namespace backend.Interfaces
         Task<bool> CheckPasswordAsync(User user, string password);
         Task Logout();
         Task<IdentityResult> UpdateUserAsync(User user);
+        Task<IEnumerable<User>> GetAllUsersAsync();
     }
 }

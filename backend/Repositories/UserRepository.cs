@@ -1,6 +1,7 @@
 using backend.Interfaces;
 using backend.Models;
 using Microsoft.AspNetCore.Identity;
+using MongoDB.Driver;
 using System;
 using System.Threading.Tasks;
 
@@ -52,6 +53,11 @@ namespace backend.Repositories
         public async Task<User> FindByIdAsync(Guid userId) // Change parameter type to Guid
         {
             return await _userManager.FindByIdAsync(userId.ToString()); // Convert Guid to string
+        }
+
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            return await Task.Run(() => _userManager.Users.ToList());
         }
     }
 }
