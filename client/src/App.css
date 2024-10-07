@@ -1,0 +1,14 @@
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.nav-link:hover,
+.dropdown-item:hover {
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+/* Smooth transition for hover effects */
+.nav-link,
+.dropdown-item {
+  transition: background-color 0.2s ease-in-out;
+}
