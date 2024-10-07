@@ -8,6 +8,9 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
+using AspNetCore.Identity.MongoDbCore.Models;
+using MongoDB.Bson;
+using backend.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,11 +31,11 @@ builder.Services.AddScoped<IMongoDatabase>(provider =>
     provider.GetService<IMongoClient>().GetDatabase(mongoSettings.DatabaseName));
 
 // Configure MongoDB Identity
-builder.Services.AddIdentity<User, Role>(options =>
+builder.Services.AddIdentity<User, MongoIdentityRole<ObjectId>>(options =>
 {
     options.User.RequireUniqueEmail = true;
 })
-.AddMongoDbStores<User, Role, Guid>(mongoSettings.ConnectionString, mongoSettings.DatabaseName)
+.AddMongoDbStores<User, MongoIdentityRole<ObjectId>, ObjectId>(mongoSettings.ConnectionString, mongoSettings.DatabaseName)
 .AddDefaultTokenProviders();
 
 // JWT configuration
@@ -60,6 +63,7 @@ builder.Services.AddAuthentication(x =>
 // Register your services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
@@ -104,6 +108,12 @@ builder.Services.AddCors(options =>
 */
 
 var app = builder.Build();
+
+app.Use(async (context, next) =>
+{
+    Console.WriteLine($"Request: {context.Request.Method} {context.Request.Path}");
+    await next.Invoke();
+});
 
 app.MapGet("/", () => "Hello World!");
 
