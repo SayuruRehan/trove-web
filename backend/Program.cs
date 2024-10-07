@@ -8,6 +8,9 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
+using AspNetCore.Identity.MongoDbCore.Models;
+using MongoDB.Bson;
+using backend.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,11 +31,11 @@ builder.Services.AddScoped<IMongoDatabase>(provider =>
     provider.GetService<IMongoClient>().GetDatabase(mongoSettings.DatabaseName));
 
 // Configure MongoDB Identity
-builder.Services.AddIdentity<User, Role>(options =>
+builder.Services.AddIdentity<User, MongoIdentityRole<ObjectId>>(options =>
 {
     options.User.RequireUniqueEmail = true;
 })
-.AddMongoDbStores<User, Role, Guid>(mongoSettings.ConnectionString, mongoSettings.DatabaseName)
+.AddMongoDbStores<User, MongoIdentityRole<ObjectId>, ObjectId>(mongoSettings.ConnectionString, mongoSettings.DatabaseName)
 .AddDefaultTokenProviders();
 
 // JWT configuration
@@ -60,32 +63,63 @@ builder.Services.AddAuthentication(x =>
 // Register your services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IOrderService,OrderService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+
+builder.Services.AddScoped<EmailService>();
+builder.Services.AddScoped<VendorService>();
+builder.Services.AddScoped<IVendorRepository, VendorRepository>();
+
+// Register Notification services
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+
 
 builder.Services.AddAuthorization();
 
 // Add controllers or other services
 builder.Services.AddControllers();
 
+// CORS setup for development (Allow all origins)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
     {
-        builder.AllowAnyOrigin()
+        builder.AllowAnyOrigin()   // Allow requests from any origin
+               .AllowAnyMethod()   // Allow all HTTP methods (GET, POST, PUT, etc.)
+               .AllowAnyHeader();  // Allow all headers
+    });
+});
+
+// In production, replace "AllowAll" with a more restrictive CORS policy
+/*
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins", builder =>
+    {
+        builder.WithOrigins("https://yourdomain.com", "https://anotherdomain.com") // Allow specific domains
                .AllowAnyMethod()
                .AllowAnyHeader();
     });
 });
+*/
 
 var app = builder.Build();
+
+app.Use(async (context, next) =>
+{
+    Console.WriteLine($"Request: {context.Request.Method} {context.Request.Path}");
+    await next.Invoke();
+});
 
 app.MapGet("/", () => "Hello World!");
 
 // Add endpoints, middleware, etc.
-app.UseCors("AllowAll");
+app.UseCors("AllowAll"); // Apply the "AllowAll" CORS policy
+
 app.UseAuthentication();
 app.UseAuthorization();
 

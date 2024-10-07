@@ -1,71 +1,102 @@
 using backend.Interfaces;
 using backend.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using backend.Models;
 using backend.Services;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Http.HttpResults;
 
-namespace backend.Controllers
+
+// [Authorize(Roles = "Administrator")]
+[Route("api/[controller]")] // Specifies the route template for controller
+[ApiController] // Automatic model validation enabled
+public class VendorController : ControllerBase
 {
-    
-    [Route("api/[controller]")] // Specifies the route template for controller
-    [ApiController] // Automatic model validation enabled
-    [Authorize(Roles = "Administrator")]
+    private readonly VendorService _vendorService;
+    private readonly EmailService _emailService;
 
-    public class VendorController(VendorService vendorService) : ControllerBase
+
+    public VendorController(VendorService vendorService, EmailService emailService)
     {
-        private readonly VendorService _vendorService = vendorService;
+        _vendorService = vendorService;
+        _emailService = emailService;
+    }
 
     // Get all Vendors
-
     [HttpGet]
     public async Task<ActionResult<IEnumerable<VendorDTO>>> GetAllVendors()
     {
         var vendors = await _vendorService.GetAllVendorsDTOAsync();
+        var vendorDtos = vendors.Select(v => new VendorDTO
+        {
+            Id = v.Id,
+            VendorName = v.VendorName,
+            VendorEmail = v.VendorEmail,
+            VendorPhone = v.VendorPhone,
+            VendorAddress = v.VendorAddress,
+            VendorCity = v.VendorCity,
+            IsActive = v.IsActive,
+            Products = v.Products,
+            Feedbacks = v.Feedbacks
+        });
 
-        if(vendors == null || vendors.Count == 0)
-            return BadRequest("No Vendors found!");
-        
-        return Ok(vendors); // Return 200 ok with list of VendorDTO
+        return Ok(vendorDtos);
     }
 
     // Get paticular Vendor
 
     [HttpGet("{id}")]
+    [ActionName("GetVendorById")]
     public async Task<ActionResult<VendorDTO>> GetVendorById(string id)
     {
         var vendor = await _vendorService.GetVendorByIdDTOAsync(id);
 
-        if(vendor == null) 
-            return BadRequest("Paticular Vendor not found!");
+        if (vendor == null) return NotFound();
 
-        return Ok(vendor);
+        var singleVendorDTO = new VendorDTO
+        {
+            Id = vendor.Id,
+            VendorName = vendor.VendorName,
+            VendorEmail = vendor.VendorEmail,
+            VendorPhone = vendor.VendorPhone,
+            VendorAddress = vendor.VendorAddress,
+            VendorCity = vendor.VendorCity,
+            IsActive = vendor.IsActive,
+            Products = vendor.Products,
+            Feedbacks = vendor.Feedbacks
+        };
+
+        return Ok(singleVendorDTO);
+    }
+
+    // Login for vendor
+
+    [HttpPost("login")]
+
+    public async Task<ActionResult> Login([FromBody] VendorLoginDTO vendorLoginDTO)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        try
+        {
+            var vendorDto = await _vendorService.LoginAsync(vendorLoginDTO);
+            return Ok(vendorDto);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(ex.Message);
+        }
     }
 
     // Create new Vendor
-
-    [HttpPost]
+    [HttpPost("register")]
     public async Task<ActionResult<VendorDTO>> CreateVendor([FromBody] CreateVendorDTO createVendorDTO)
     {
-        if(!ModelState.IsValid) return BadRequest(ModelState);
+        if (!ModelState.IsValid) return BadRequest(ModelState);
 
         var newVendor = await _vendorService.CreateVendorDTOAsync(createVendorDTO);
 
-        if(newVendor != null)
+        if (newVendor != null)
         {
-            var createdVendorDTO = new VendorDTO
-            {
-                Id = newVendor.Id,
-                VendorName = newVendor.VendorName,
-                VendorEmail = newVendor.VendorEmail,
-                VendorPhone = newVendor.VendorPhone,
-                VendorAddress = newVendor.VendorAddress,
-                VendorCity = newVendor.VendorCity
-            };
-
-            return CreatedAtAction(nameof(GetVendorById), new{ id = newVendor.Id }, createdVendorDTO);
+            return CreatedAtAction(nameof(GetVendorById), new { id = newVendor.Id }, newVendor);
         }
 
         return BadRequest("Vendor creation failed!");
@@ -74,46 +105,54 @@ namespace backend.Controllers
     // Update existing Vendor
 
     [HttpPut("{id}")]
-
     public async Task<ActionResult<VendorDTO>> UpdateVendor(string id, [FromBody] UpdateVendorDTO updateVendorDTO)
     {
 
-        if(id != updateVendorDTO.Id) return BadRequest("Id mismatch!");
-
         // Check model binding and validation succeed
-        if(!ModelState.IsValid) return BadRequest(ModelState);
+        if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        var updatedVendor = await _vendorService.UpdateVendorDTOAsync(updateVendorDTO);
+        var updatedVendor = await _vendorService.UpdateVendorAsync(id, updateVendorDTO);
 
-        if(updatedVendor == null) return NotFound();
+        if (updatedVendor == null) return NotFound();
 
-        var updatedVendorDTO = new VendorDTO
-        {
-            Id = updatedVendor.Id,
-            VendorName = updatedVendor.VendorName,
-            VendorEmail = updatedVendor.VendorEmail,
-            VendorPhone = updatedVendor.VendorPhone,
-            VendorAddress = updatedVendor.VendorAddress,
-            VendorCity = updatedVendor.VendorCity
-        };
-
-        return Ok();  
+        return Ok(updatedVendor);
     }
 
+
     // Delete existing Vendor
-
     [HttpDelete("{id}")]
-
     public async Task<ActionResult> DeleteVendor(string id)
     {
         var result = await _vendorService.GetVendorByIdDTOAsync(id);
 
-        if(result == null) NotFound();
+        if (result == null) NotFound();
 
         await _vendorService.DeleteVendorDTOAsync(id);
-        return NoContent(); // 204 successfully deleted, no response body
+        //return NoContent(); // 204 successfully deleted, no response body
+
+        return Ok(new { message = "Vendor successfully deleted!" });
     }
 
-    }
 
+    [HttpPost("{vendorId}/feedback")]
+    public async Task<IActionResult> AddFeedback(string vendorId, [FromBody] CustomerFeedback feedback)
+    {
+        try
+        {
+            await _vendorService.AddFeedbackToVendorAsync(vendorId, feedback);
+            return Ok("Feedback added successfully.");
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound("Vendor not found.");
+        }
+        catch (ApplicationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Internal server error: " + ex.Message);
+        }
+    }
 }
