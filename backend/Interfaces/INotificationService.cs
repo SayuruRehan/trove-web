@@ -1,5 +1,6 @@
 using backend.DTOs;
 using backend.Models;
+
 namespace backend.Interfaces
 {
     public interface INotificationService
