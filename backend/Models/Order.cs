@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - Order Model
+
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDbGenericRepository.Attributes;
@@ -55,6 +57,7 @@ namespace backend.Models
         public List<string> OrderItemIds { get; set; }
     }
 
+    // Added OrderItem class
     [CollectionName("orderItems")]
     public class OrderItem
     {

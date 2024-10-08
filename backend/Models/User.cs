@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - User Model
+
 using AspNetCore.Identity.MongoDbCore.Models;
 using Microsoft.AspNetCore.Identity;
 using MongoDbGenericRepository.Attributes;

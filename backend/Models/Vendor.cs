@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - Vendor model 
+
 using Microsoft.AspNetCore.Identity;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
@@ -5,13 +7,12 @@ using MongoDbGenericRepository.Attributes;
 
 namespace backend.Models
 {
-    // Vendor model for manage mongoDB collection
 
     [CollectionName("Vendors")]
     public class Vendor 
     {
 
-        // Explicitly say this is the primary key for the MongoDB document
+        //  the primary key for the MongoDB document
         [BsonId] 
         // Tells in MongoDb treat as ObjectId and in application treat as string
         [BsonElement ("_id"), BsonRepresentation(BsonType.ObjectId)]
