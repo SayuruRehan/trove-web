@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - Order Service
+
 using backend.DTOs;
 using backend.Interfaces;
 using backend.Models;
@@ -182,6 +184,7 @@ namespace backend.Services
             };
         }
 
+        // Get all orders with their order items
         public async Task<IEnumerable<OrderDto>> GetAllOrdersWithItemsAsync()
         {
             return await _orderRepository.GetAllOrdersWithItemsAsync();

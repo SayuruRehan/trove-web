@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - Cloudinary Service
+
 using backend.Models;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
@@ -35,7 +37,6 @@ namespace backend.Services
                 var uploadParams = new ImageUploadParams
                 {
                     File = new FileDescription(file.FileName, stream),
-                    // Add transformations if needed
                     // Transformation = new Transformation().Height(500).Width(500).Crop("fill")
                 };
 

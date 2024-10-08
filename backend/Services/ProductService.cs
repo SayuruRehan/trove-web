@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - Product Service
+
 using backend.DTOs;
 using backend.Interfaces;
 using backend.Models;
@@ -123,7 +125,7 @@ namespace backend.Services
 
             if (updateProductDto.Image != null)
             {
-                // If there's an existing image URL, remove it from Cloudinary (or your image hosting service)
+                // Delete the old image from Cloudinary
                 if (!string.IsNullOrEmpty(existingProduct.ImageUrl))
                 {
                     var imagePublicId = GetImagePublicId(existingProduct.ImageUrl);  // Extract the public ID from the existing URL
@@ -196,6 +198,8 @@ namespace backend.Services
 
             return productDtos;
         }
+
+        // Extract the public ID from the image URL
         private static string GetImagePublicId(string imageUrl)
         {
             var uri = new Uri(imageUrl);
