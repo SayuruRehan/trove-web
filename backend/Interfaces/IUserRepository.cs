@@ -1,7 +1,9 @@
-using backend.Models; // Ensure you have the correct namespace for User
-using Microsoft.AspNetCore.Identity; // Required for IdentityResult
-using System; // Required for Guid
-using System.Threading.Tasks; // Required for Task
+// IT21470004 - BOPITIYA S. R. - Interface for User Repository
+
+using backend.Models; 
+using Microsoft.AspNetCore.Identity; 
+using System; 
+using System.Threading.Tasks; 
 
 namespace backend.Interfaces
 {
@@ -10,7 +12,7 @@ namespace backend.Interfaces
         Task<IdentityResult> CreateUserAsync(User user, string password);
         Task<User> FindByUsernameAsync(string username);
         Task<User> FindByEmailAsync(string email);
-        Task<User> FindByIdAsync(Guid userId); // Ensure this matches your implementation
+        Task<User> FindByIdAsync(Guid userId); 
         Task<bool> CheckPasswordAsync(User user, string password);
         Task Logout();
         Task<IdentityResult> UpdateUserAsync(User user);
