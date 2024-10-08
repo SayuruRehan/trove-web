@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - VendorLoginDTO class for vendor management
+
 using System.ComponentModel.DataAnnotations;
 
 namespace backend.DTOs

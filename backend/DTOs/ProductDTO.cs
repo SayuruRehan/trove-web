@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - Product DTO
+
 using System.ComponentModel.DataAnnotations;
 
 namespace backend.DTOs

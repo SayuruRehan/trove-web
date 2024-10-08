@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. -NOTIFICATION CONTROLLER
+
 using backend.DTOs;
 using backend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +17,7 @@ namespace backend.Controllers
             _notificationService = notificationService;
         }
 
+        // Add notification
         [HttpPost("add")]
         public async Task<IActionResult> AddNotification([FromBody] NotificationDTO notificationDTO)
         {
@@ -25,6 +28,7 @@ namespace backend.Controllers
             return Ok();
         }
 
+        // Get all notifications
         [HttpGet("{customerId}")]
         public async Task<IActionResult> GetNotificationsByCustomerId(string customerId)
         {

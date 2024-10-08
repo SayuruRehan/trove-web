@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - EmailService class for sending emails
+
 using MailKit.Net.Smtp;
 using MimeKit;
 using MailKit;
@@ -23,6 +25,7 @@ namespace backend.Services
             _password = configuration["EmailSettings:Password"];
         }
 
+        // Send email
         public async Task SendEmailAsync(EmailDTO emailDto)
         {
             var message = new MimeMessage();

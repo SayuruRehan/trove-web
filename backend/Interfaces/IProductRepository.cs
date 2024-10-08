@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - Interface for Product Repository
+
 using backend.DTOs;
 using backend.Models;
 using Microsoft.AspNetCore.Identity;

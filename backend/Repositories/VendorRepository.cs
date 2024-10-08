@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - Vendor Repository
+
 using backend.Interfaces;
 using backend.Models;
 using MongoDB.Driver;
@@ -197,6 +199,7 @@ namespace backend.Repositories
 
         }
 
+        // Add feedback to a vendor
         public async Task AddFeedbackToVendorAsync(string vendorId, CustomerFeedback feedback)
         {
             if (string.IsNullOrEmpty(vendorId))
