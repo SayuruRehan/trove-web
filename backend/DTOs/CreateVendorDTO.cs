@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - CreateVendorDTO class for vendor management
+
 using System.ComponentModel.DataAnnotations;
 using backend.Models;
 

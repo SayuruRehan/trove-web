@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - Authentication DTOs
+
 using System;
 using System.ComponentModel.DataAnnotations;
 
