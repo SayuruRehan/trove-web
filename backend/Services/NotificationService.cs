@@ -7,7 +7,7 @@ namespace backend.Services
     public class NotificationService : INotificationService
     {
         private readonly INotificationRepository _notificationRepository;
-
+        //initialize the repository
         public NotificationService(INotificationRepository notificationRepository)
         {
             _notificationRepository = notificationRepository;

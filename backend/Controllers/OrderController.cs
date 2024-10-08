@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - ORDER CONTROLLER
+
 using backend.DTOs;
 using backend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +19,7 @@ namespace backend.Controllers
             _orderService = orderService;
         }
 
+        // Get all orders
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OrderDto>>> GetAllOrders()
         {
@@ -24,6 +27,7 @@ namespace backend.Controllers
             return Ok(orders);
         }
 
+        // Get order by ID
         [HttpGet("{id}")]
         public async Task<ActionResult<OrderDto>> GetOrderById(string id)
         {
@@ -32,6 +36,7 @@ namespace backend.Controllers
             return Ok(order);
         }
 
+        // Create order
         [HttpPost]
         public async Task<ActionResult<OrderDto>> CreateOrder([FromBody] CreateOrderDto createOrderDto)
         {
@@ -39,6 +44,7 @@ namespace backend.Controllers
             return CreatedAtAction(nameof(GetOrderById), new { id = createdOrder.Id }, createdOrder);
         }
 
+        // Update order
         [HttpPut("{id}")]
         public async Task<ActionResult<OrderDto>> UpdateOrder(string id, [FromBody] UpdateOrderDto updateOrderDto)
         {
@@ -48,6 +54,7 @@ namespace backend.Controllers
             return Ok(updatedOrder);
         }
 
+        // Delete order
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(string id)
         {
@@ -66,6 +73,7 @@ namespace backend.Controllers
             }
         }
 
+        // Get all order items
         [HttpGet("vendor/{vendorId}/suborders")]
         public async Task<ActionResult<IEnumerable<OrderItemDto>>> GetSubOrdersByVendor(string vendorId)
         {
@@ -79,6 +87,7 @@ namespace backend.Controllers
             return Ok(subOrders);
         }
 
+        // Get order item by ID
         [HttpPut("orderitems/{id}")]
         public async Task<ActionResult<OrderItemDto>> UpdateOrderItem(string id, [FromBody] UpdateOrderItemDto updateOrderItemDto)
         {
