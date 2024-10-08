@@ -1,5 +1,3 @@
-// IT21167300 - Sumanasekara P. D. M.
-
 import React, { useEffect, useState } from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";

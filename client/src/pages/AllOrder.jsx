@@ -1,5 +1,3 @@
-// IT21167300 - Sumanasekara P. D. M.
-
 import React, { useEffect, useState } from 'react'
 import Table from 'react-bootstrap/Table';
 import Container from 'react-bootstrap/Container';

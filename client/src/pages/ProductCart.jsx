@@ -1,5 +1,3 @@
-// IT21167300 - Sumanasekara P. D. M.
-
 import { React, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";

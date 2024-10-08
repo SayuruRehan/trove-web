@@ -1,5 +1,3 @@
-// IT21167300 - Sumanasekara P. D. M.
-
 import React, { useState } from "react";
 import { Form, Button, Container, Row, Col, Card } from "react-bootstrap";
 import VendorService from "../../../APIService/VendorService";

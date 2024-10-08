@@ -1,5 +1,3 @@
-// IT21167300 - Sumanasekara P. D. M.
-
 import React, { useEffect, useState } from "react";
 import { useCartContext } from "../components/providers/ContextProvider";
 import ProductCard from "../components/ProductCard";
