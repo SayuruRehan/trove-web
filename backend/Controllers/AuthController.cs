@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - Authentication Controller
+
 using backend.DTOs;
 using backend.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -28,14 +30,22 @@ public class AuthController : ControllerBase
         return BadRequest(result.Errors);
     }
 
+    // Login endpoint
     [HttpPost("login")]
     [AllowAnonymous]
     public async Task<IActionResult> Login(UserLoginDTO userLoginDTO)
     {
-        var token = await _authService.Login(userLoginDTO);
-        if (token != null)
+        var userLoginResponse = await _authService.Login(userLoginDTO);
+        if (userLoginResponse != null)
         {
-            return Ok(new { token });
+            return Ok(new UserLoginResponseDTO
+            {
+                UserId = userLoginResponse.UserId,  // Convert ObjectId or Guid to string
+                Firstname = userLoginResponse.Firstname,
+                Lastname = userLoginResponse.Lastname,
+                Role = userLoginResponse.Role,
+                Token = userLoginResponse.Token
+            });
         }
 
         return Unauthorized("Invalid login attempt.");
@@ -49,4 +59,22 @@ public class AuthController : ControllerBase
         await _authService.Logout();
         return Ok(new { message = "User logged out successfully!" });
     }
+
+    [HttpPut("update/{userId}")]
+    [Authorize]
+    public async Task<IActionResult> UpdateUser(Guid userId, UserUpdateDTO userUpdateDTO)
+    {
+
+        var result = await _authService.UpdateUser(userId, userUpdateDTO);
+
+        if (result.Succeeded)
+        {
+            return Ok(new { message = "User updated successfully!" });
+        }
+
+        return BadRequest(result.Errors);
+
+    }
+
+
 }

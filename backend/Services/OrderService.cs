@@ -1,9 +1,9 @@
+// IT21470004 - BOPITIYA S. R. - Order Service
+
 using backend.DTOs;
 using backend.Interfaces;
 using backend.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace backend.Services
 {
@@ -20,9 +20,19 @@ namespace backend.Services
         public async Task<IEnumerable<OrderDto>> GetAllOrdersAsync()
         {
             var orders = await _orderRepository.GetAllOrdersAsync();
-
-            // Use a mapping function to improve code reuse
-            return orders.Select(MapToOrderDto);
+            return orders.Select(order => new OrderDto
+            {
+                Id = order.Id,
+                UserId = order.UserId,
+                OrderId = order.OrderId,  // Direct mapping
+                UserName = order.UserName,  // Direct mapping
+                CreatedAt = order.CreatedAt,
+                Status = order.Status,
+                TotalAmount = order.TotalAmount,
+                ShippingAddress = order.ShippingAddress,
+                MobileNumber = order.MobileNumber,
+                OrderItemIds = order.OrderItemIds  // Direct mapping
+            });
         }
 
         // Get order by ID
@@ -32,9 +42,22 @@ namespace backend.Services
                 return null;
 
             var order = await _orderRepository.GetOrderByIdAsync(id);
-            if (order == null) return null;
+            if (order == null)
+                return null;
 
-            return MapToOrderDto(order);
+            return new OrderDto
+            {
+                Id = order.Id,
+                UserId = order.UserId,
+                OrderId = order.OrderId,  // Direct mapping
+                UserName = order.UserName,  // Direct mapping
+                CreatedAt = order.CreatedAt,
+                Status = order.Status,
+                TotalAmount = order.TotalAmount,
+                ShippingAddress = order.ShippingAddress,
+                MobileNumber = order.MobileNumber,
+                OrderItemIds = order.OrderItemIds  // Direct mapping
+            };
         }
 
         // Create a new order
@@ -43,28 +66,53 @@ namespace backend.Services
             if (createOrderDto == null)
                 throw new ArgumentNullException(nameof(createOrderDto));
 
+            // Create OrderItems list from the DTO
+            var orderItems = createOrderDto.OrderItems.Select(itemDto => new OrderItem
+            {
+                ProductId = itemDto.ProductId,
+                ProductName = itemDto.ProductName,
+                ProductPrice = itemDto.ProductPrice,
+                Quantity = itemDto.Quantity,
+                VendorId = itemDto.VendorId,
+                VendorName = itemDto.VendorName,
+                ShippingAddress = itemDto.ShippingAddress,
+                FulfillmentStatus = itemDto.FulfillmentStatus ?? FulfillmentStatusEnum.Pending.ToString(),
+                Amount = itemDto.Amount
+            }).ToList();
+
+            // Insert the OrderItems and get their MongoDB ObjectIds
+            var orderItemIds = await _orderRepository.AddOrderItemsAsync(orderItems);
+
+            // Create the Order object with the OrderItemIds
             var order = new Order
             {
                 UserId = createOrderDto.UserId,
-                orderId = createOrderDto.orderId,
-                userName = createOrderDto.userName,
+                OrderId = createOrderDto.OrderId,  // Direct mapping
+                UserName = createOrderDto.UserName,  // Direct mapping
                 TotalAmount = createOrderDto.TotalAmount,
                 ShippingAddress = createOrderDto.ShippingAddress,
                 MobileNumber = createOrderDto.MobileNumber,
-                OrderItems = createOrderDto.OrderItems.Select(oi => new OrderItem
-                {
-                    ProductId = oi.ProductId,
-                    ProductName = oi.ProductName,
-                    ProductPrice = oi.ProductPrice,
-                    Quantity = oi.Quantity,
-                    VendorId = oi.VendorId,
-                    VendorName = oi.VendorName,
-                    FulfillmentStatus = oi.FulfillmentStatus ?? "Pending" // Provide a default if not supplied
-                }).ToList()
+                Status = OrderStatus.Pending.ToString(),
+                OrderItemIds = orderItemIds,  // Direct mapping to the list of inserted OrderItemIds
             };
 
+            // Insert the order into the database
             var createdOrder = await _orderRepository.CreateOrderAsync(order);
-            return MapToOrderDto(createdOrder);
+
+            // Return the created order as a DTO
+            return new OrderDto
+            {
+                Id = createdOrder.Id,
+                UserId = createdOrder.UserId,
+                OrderId = createdOrder.OrderId,  // Direct mapping
+                UserName = createdOrder.UserName,  // Direct mapping
+                CreatedAt = createdOrder.CreatedAt,
+                Status = createdOrder.Status,
+                TotalAmount = createdOrder.TotalAmount,
+                ShippingAddress = createdOrder.ShippingAddress,
+                MobileNumber = createdOrder.MobileNumber,
+                OrderItemIds = createdOrder.OrderItemIds  // Direct mapping
+            };
         }
 
         // Update an existing order
@@ -79,23 +127,30 @@ namespace backend.Services
 
             // Update the relevant fields
             order.Status = updateOrderDto.Status;
-            order.userName = updateOrderDto.userName;
+            order.UserName = updateOrderDto.UserName;  // Direct mapping
             order.ShippingAddress = updateOrderDto.ShippingAddress;
             order.MobileNumber = updateOrderDto.MobileNumber;
-            order.OrderItems = updateOrderDto.OrderItems.Select(oi => new OrderItem
-            {
-                ProductId = oi.ProductId,
-                ProductName = oi.ProductName,
-                ProductPrice = oi.ProductPrice,
-                Quantity = oi.Quantity,
-                VendorId = oi.VendorId,
-                VendorName = oi.VendorName,
-                FulfillmentStatus = oi.FulfillmentStatus ?? "Pending" // Ensure this has a value
-            }).ToList();
+
+
 
             var updatedOrder = await _orderRepository.UpdateOrderAsync(order);
-            return MapToOrderDto(updatedOrder);
+
+            // Return the updated order as a DTO
+            return new OrderDto
+            {
+                Id = updatedOrder.Id,
+                UserId = order.UserId,
+                OrderId = order.OrderId,  // Direct mapping
+                UserName = updatedOrder.UserName,  // Direct mapping
+                CreatedAt = order.CreatedAt,
+                Status = updatedOrder.Status,
+                TotalAmount = order.TotalAmount,
+                ShippingAddress = updatedOrder.ShippingAddress,
+                MobileNumber = updatedOrder.MobileNumber,
+                OrderItemIds = order.OrderItemIds,  // Direct mapping
+            };
         }
+
 
         // Delete an order by ID
         public async Task DeleteOrderAsync(string id)
@@ -105,32 +160,36 @@ namespace backend.Services
 
             await _orderRepository.DeleteOrderAsync(id);
         }
-
-        // Map Order entity to OrderDto for reuse
-        private OrderDto MapToOrderDto(Order order)
+        public async Task<IEnumerable<OrderItemDto>> GetSubOrdersByVendorIdAsync(string vendorId)
         {
-            return new OrderDto
+            return await _orderRepository.GetSubOrdersByVendorIdAsync(vendorId);
+        }
+
+        public async Task<OrderItemDto> UpdateOrderItemAsync(UpdateOrderItemDto updateOrderItemDto)
+        {
+            var updatedOrderItem = await _orderRepository.UpdateOrderItemAsync(updateOrderItemDto);
+
+            return new OrderItemDto
             {
-                Id = order.Id,
-                UserId = order.UserId,
-                orderId = order.orderId,
-                userName = order.userName,
-                CreatedAt = order.CreatedAt,
-                status = order.Status,
-                TotalAmount = order.TotalAmount,
-                ShippingAddress = order.ShippingAddress,
-                MobileNumber = order.MobileNumber,
-                OrderItems = order.OrderItems.Select(oi => new OrderItemDto
-                {
-                    ProductId = oi.ProductId,
-                    ProductName = oi.ProductName,
-                    ProductPrice = oi.ProductPrice,
-                    Quantity = oi.Quantity,
-                    VendorId = oi.VendorId,
-                    VendorName = oi.VendorName,
-                    FulfillmentStatus = oi.FulfillmentStatus
-                }).ToList()
+                Id = updatedOrderItem.Id,
+                ProductId = updatedOrderItem.ProductId,
+                ProductName = updatedOrderItem.ProductName,
+                ProductPrice = updatedOrderItem.ProductPrice,
+                Quantity = updatedOrderItem.Quantity,
+                VendorId = updatedOrderItem.VendorId,
+                CreatedAt = updatedOrderItem.CreatedAt,
+                VendorName = updatedOrderItem.VendorName,
+                FulfillmentStatus = updatedOrderItem.FulfillmentStatus,
+                Amount = updatedOrderItem.Amount
             };
         }
+
+        // Get all orders with their order items
+        public async Task<IEnumerable<OrderDto>> GetAllOrdersWithItemsAsync()
+        {
+            return await _orderRepository.GetAllOrdersWithItemsAsync();
+        }
+
+
     }
 }

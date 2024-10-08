@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - Product Model
+
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDbGenericRepository.Attributes;
@@ -12,7 +14,7 @@ namespace backend.Models
         public string? Id { get; set; } // Use string for ObjectId compatibility
 
         [BsonElement("name")]
-        public string Name { get; set; }
+        public string ProductName { get; set; }
 
         [BsonElement("description")]
         public string Description { get; set; }
@@ -21,7 +23,7 @@ namespace backend.Models
         public string ImageUrl { get; set; } // Store the Cloudinary image URL
 
         [BsonElement("price")]
-        public decimal Price { get; set; }
+        public decimal ProductPrice { get; set; }
 
         [BsonElement("stock")]
         public int Stock { get; set; }
@@ -29,6 +31,7 @@ namespace backend.Models
         [BsonElement("vendorId")]
         [BsonRepresentation(BsonType.ObjectId)]
         public string VendorId { get; set; }
+        public string VendorName { get; set; }
 
         [BsonElement("createdAt")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
