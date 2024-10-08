@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - Notification DTO
+
 namespace backend.DTOs
 {
     public class NotificationDTO

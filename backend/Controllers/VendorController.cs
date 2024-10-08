@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - VENDOR CONTROLLER
+
 using backend.Interfaces;
 using backend.DTOs;
 using Microsoft.AspNetCore.Mvc;
@@ -133,7 +135,7 @@ public class VendorController : ControllerBase
         return Ok(new { message = "Vendor successfully deleted!" });
     }
 
-
+    // Add feedback to vendor
     [HttpPost("{vendorId}/feedback")]
     public async Task<IActionResult> AddFeedback(string vendorId, [FromBody] CustomerFeedback feedback)
     {

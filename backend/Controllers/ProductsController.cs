@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - PRODUCTS CONTROLLER
+
 using Microsoft.AspNetCore.Mvc;
 using backend.Services;
 using backend.DTOs;
@@ -85,7 +87,7 @@ namespace backend.Controllers
             return BadRequest("Product creation failed.");
         }
 
-
+        // Update a product by ID
         [HttpPut("{id}")]
         public async Task<ActionResult<ProductDto>> Update(string id, [FromForm] UpdateProductDto updateProductDto)
         {

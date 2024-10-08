@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - Authentication Controller
+
 using backend.DTOs;
 using backend.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -28,6 +30,7 @@ public class AuthController : ControllerBase
         return BadRequest(result.Errors);
     }
 
+    // Login endpoint
     [HttpPost("login")]
     [AllowAnonymous]
     public async Task<IActionResult> Login(UserLoginDTO userLoginDTO)

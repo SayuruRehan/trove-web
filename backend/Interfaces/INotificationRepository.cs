@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - Interface for Notification Repository
+
 using backend.Models;
 
 namespace backend.Interfaces

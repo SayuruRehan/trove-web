@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - Main Program
+
 using backend.Models;
 using backend.Repositories;
 using backend.Services;
@@ -107,6 +109,7 @@ builder.Services.AddCors(options =>
 });
 */
 
+// Add services to the container.
 var app = builder.Build();
 
 app.Use(async (context, next) =>
@@ -125,4 +128,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// Start the application
 app.Run();

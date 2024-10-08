@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - Authentication Service
+
 using System;
 using backend.DTOs;
 using backend.Interfaces;
@@ -25,6 +27,7 @@ namespace backend.Services
             _configuration = configuration;
         }
 
+        // Register function
         public async Task<IdentityResult> Register(UserRegisterDTO userRegisterDTO)
         {
             var user = new User
@@ -68,7 +71,7 @@ namespace backend.Services
 
         }
 
-
+        // Logout function
         public async Task Logout()
         {
             await _userRepository.Logout();
@@ -93,6 +96,7 @@ namespace backend.Services
             return tokenHandler.WriteToken(token);
         }
 
+        // Update user function
         public async Task<IdentityResult> UpdateUser(Guid userId, UserUpdateDTO userUpdateDTO)
         {
             var user = await _userRepository.FindByIdAsync(userId);

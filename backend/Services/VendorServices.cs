@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - Vendor Service
+
 using backend.DTOs;
 using backend.Interfaces;
 using backend.Models;
@@ -243,6 +245,7 @@ namespace backend.Services
             };
         }
 
+        // Deleting a paticular Vendor
         public Task DeleteVendorDTOAsync(string id) => _vendorReopository.DeleteVendorAsync(id);
         public async Task AddFeedbackToVendorAsync(string vendorId, CustomerFeedback feedback)
         {

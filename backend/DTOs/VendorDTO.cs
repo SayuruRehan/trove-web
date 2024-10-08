@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - VendorDTO class for vendor management
+
 using backend.Models;
 
 namespace backend.DTOs
