@@ -43,7 +43,8 @@ namespace backend.DTOs
         [Required(ErrorMessage = "Vender id is required.")]
         public string VendorId { get; set; }
 
-        public string? VendorName { get; set; }
+        [Required(ErrorMessage = "Vender name is required.")]
+        public string VendorName { get; set; }
 
         public IFormFile? Image { get; set; }
     }
