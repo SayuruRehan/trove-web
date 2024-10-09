@@ -89,8 +89,8 @@ namespace backend.Services
                 ProductPrice = createProductDto.ProductPrice,
                 Stock = createProductDto.Stock,
                 ImageUrl = imageUrl,  // Only set the image URL if an image was uploaded
-                VendorId = createProductDto.VendorId,
-                VendorName = createProductDto.VendorName
+                VendorId = createProductDto.VendorId.ToString(),
+                VendorName = createProductDto.VendorName,
             };
 
             // Save the product in the repository
@@ -99,14 +99,14 @@ namespace backend.Services
             // Return the created product as a DTO
             return new ProductDto
             {
-                Id = createdProduct.Id,
+                Id = createdProduct.Id.ToString(),
                 ProductName = createdProduct.ProductName,
                 Description = createdProduct.Description,
                 ProductPrice = createdProduct.ProductPrice,
                 Stock = createdProduct.Stock,
                 ImageUrl = createdProduct.ImageUrl,  // This will be null if no image was uploaded
                 VendorId = createdProduct.VendorId,
-                VendorName = createdProduct.VendorName
+                VendorName = createdProduct.VendorName,
             };
         }
 
@@ -199,7 +199,7 @@ namespace backend.Services
             return productDtos;
         }
 
-        // Extract the public ID from the image URL
+        // Extract the public ID from the image URL        
         private static string GetImagePublicId(string imageUrl)
         {
             var uri = new Uri(imageUrl);
