@@ -4,8 +4,6 @@ using AspNetCore.Identity.MongoDbCore.Models;
 using Microsoft.AspNetCore.Identity;
 using MongoDbGenericRepository.Attributes;
 using MongoDB.Bson.Serialization.Attributes; // For BsonElement
-using System;
-using System.ComponentModel.DataAnnotations;
 using MongoDB.Bson; // For Required and EnumDataType attributes
 
 namespace backend.Models
@@ -14,7 +12,7 @@ namespace backend.Models
     public class User : MongoIdentityUser<ObjectId>
     {
         [BsonRepresentation(BsonType.ObjectId)]
-        public override ObjectId Id { get; set; }  // Override Id to use ObjectId
+        public override ObjectId Id { get; set; }
 
         [PersonalData]
         public string Firstname { get; set; }
@@ -27,14 +25,7 @@ namespace backend.Models
 
         public string Role { get; set; }
 
-        [BsonElement("status")]
-        [EnumDataType(typeof(UserStatus))]
-        public UserStatus Status { get; set; } = UserStatus.Deactive;
+        public bool IsApproved { get; set; } = false;
     }
 
-    public enum UserStatus
-    {
-        Active = 1,
-        Deactive = 0
-    }
 }
