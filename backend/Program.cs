@@ -70,10 +70,10 @@ builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IFeedBackRepository, FeedbackRepository>();
+builder.Services.AddScoped<FeedbackService>();
 
 builder.Services.AddScoped<EmailService>();
-builder.Services.AddScoped<VendorService>();
-builder.Services.AddScoped<IVendorRepository, VendorRepository>();
 
 // Register Notification services
 builder.Services.AddScoped<INotificationService, NotificationService>();
@@ -109,7 +109,6 @@ builder.Services.AddCors(options =>
 });
 */
 
-// Add services to the container.
 var app = builder.Build();
 
 app.Use(async (context, next) =>
@@ -128,5 +127,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Start the application
 app.Run();
