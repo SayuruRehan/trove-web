@@ -2,6 +2,7 @@
 
 using backend.DTOs;
 using Microsoft.AspNetCore.Identity;
+using MongoDB.Bson;
 
 namespace backend.Interfaces
 {
@@ -12,6 +13,6 @@ namespace backend.Interfaces
 
         Task Logout();
 
-        Task<IdentityResult> UpdateUser(Guid userId, UserUpdateDTO userUpdateDTO);
+        Task<IdentityResult> UpdateUser(string userId, UserUpdateDTO userUpdateDTO);
     }
 }
