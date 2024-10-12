@@ -17,19 +17,12 @@ import { CirclePlus, Pencil, Trash2 } from "lucide-react";
 ring.register();
 
 import ProductService from "../../../APIService/ProductService";
+import { useAuth } from "../../context/authContext";
 
 const VendorDashboard = () => {
+  const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      productName: "Product 1",
-      productPrice: 19.99,
-      description: "Description for Product 1",
-      imageUrl:
-        "https://www.apple.com/newsroom/images/product/iphone/standard/Apple_iPhone-13-Pro_Colors_09142021_big.jpg.large.jpg",
-    },
-  ]);
+  const [products, setProducts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [currentProduct, setCurrentProduct] = useState({
     id: null,
@@ -38,19 +31,25 @@ const VendorDashboard = () => {
     description: "",
     imageUrl: null,
     stock: 0,
+    vendorId: user.userId,
+    venderName: user.userName,
   });
+
+  useEffect(() => {
+    console.log("user >>", user);
+  }, [user]);
+
   const [previewImage, setPreviewImage] = useState("");
 
   const getProductList = async () => {
-    const response = await ProductService.getVenderProducts(
-      "65074c59a3e8fa0c65432109"
-    );
+    const response = await ProductService.getVenderProducts(user.userId);
     if (response.data) setProducts(response.data);
   };
 
   useEffect(() => {
     getProductList();
-  }, []);
+    setCurrentProduct((prv) => ({ ...prv, venderName: user.userName }));
+  }, [user]);
 
   useEffect(() => {
     return () => {
@@ -67,6 +66,9 @@ const VendorDashboard = () => {
       productPrice: "",
       description: "",
       imageUrl: null,
+      stock: 0,
+      vendorId: user.userId,
+      venderName: user.userName,
     }
   ) => {
     setCurrentProduct(product);
@@ -81,7 +83,10 @@ const VendorDashboard = () => {
       productName: "",
       productPrice: "",
       description: "",
-      image: null,
+      imageUrl: null,
+      stock: 0,
+      vendorId: user.userId,
+      venderName: user.userName,
     });
     setPreviewImage("");
   };
@@ -111,6 +116,9 @@ const VendorDashboard = () => {
     formData.append("productName", currentProduct.productName);
     formData.append("productPrice", currentProduct.productPrice);
     formData.append("description", currentProduct.description);
+    formData.append("vendorId", user.userId);
+    formData.append("vendorName", currentProduct.venderName);
+
     if (currentProduct.image instanceof File) {
       formData.append("image", currentProduct.image);
     }
@@ -129,7 +137,6 @@ const VendorDashboard = () => {
   };
 
   const handleDelete = async (id) => {
-    console.log("id", id);
     if (id) {
       await ProductService.deleteVenderProduct(id);
     }
@@ -151,46 +158,50 @@ const VendorDashboard = () => {
               <h5 className="mb-0">Product Listings</h5>
             </Card.Header>
             <ListGroup variant="flush">
-              {products.map((product) => (
-                <ListGroup.Item
-                  key={product.id}
-                  className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center py-3"
-                >
-                  <div className="d-flex align-items-center mb-2 mb-md-0">
-                    <Image
-                      src={product.imageUrl}
-                      rounded
-                      className="me-3"
-                      width={60}
-                      height={60}
-                      style={{ objectFit: "cover" }}
-                    />
-                    <div>
-                      <h6 className="mb-0">{product.productName}</h6>
-                      <Badge bg="success" className="mt-1">
-                        ${product.productPrice}
-                      </Badge>
+              {products.length ? (
+                products.map((product) => (
+                  <ListGroup.Item
+                    key={product.id}
+                    className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center py-3"
+                  >
+                    <div className="d-flex align-items-center mb-2 mb-md-0">
+                      <Image
+                        src={product.imageUrl}
+                        rounded
+                        className="me-3"
+                        width={60}
+                        height={60}
+                        style={{ objectFit: "cover" }}
+                      />
+                      <div>
+                        <h6 className="mb-0">{product.productName}</h6>
+                        <Badge bg="success" className="mt-1">
+                          ${product.productPrice}
+                        </Badge>
+                      </div>
                     </div>
-                  </div>
-                  <div className="d-flex">
-                    <Button
-                      variant="outline-primary"
-                      size="sm"
-                      className="me-2"
-                      onClick={() => handleShowModal(product)}
-                    >
-                      <Pencil size={16} className="me-1" /> Edit
-                    </Button>
-                    <Button
-                      variant="outline-danger"
-                      size="sm"
-                      onClick={() => handleDelete(product.id)}
-                    >
-                      <Trash2 size={16} className="me-1" /> Delete
-                    </Button>
-                  </div>
-                </ListGroup.Item>
-              ))}
+                    <div className="d-flex">
+                      <Button
+                        variant="outline-primary"
+                        size="sm"
+                        className="me-2"
+                        onClick={() => handleShowModal(product)}
+                      >
+                        <Pencil size={16} className="me-1" /> Edit
+                      </Button>
+                      <Button
+                        variant="outline-danger"
+                        size="sm"
+                        onClick={() => handleDelete(product.id)}
+                      >
+                        <Trash2 size={16} className="me-1" /> Delete
+                      </Button>
+                    </div>
+                  </ListGroup.Item>
+                ))
+              ) : (
+                <p className="m-3">"No Products..."</p>
+              )}
             </ListGroup>
           </Card>
         </Col>

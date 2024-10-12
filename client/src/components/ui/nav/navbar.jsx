@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Nav,
@@ -10,13 +10,36 @@ import {
 import { useCartContext } from "../../providers/ContextProvider";
 import CartModal from "./CartModal";
 import { ShoppingBag, User } from "lucide-react";
+import { useAuth } from "../../../context/authContext";
+
+const NavList = [
+  { label: "Admin", path: "/adminDashboard", role: "admin" },
+  { label: "CSR", path: "/csr", role: "csr" },
+  { label: "Vendor", path: "/vendor", role: "vendor" },
+];
 
 const MainNavbar = () => {
+  const { user, logout, isLoading } = useAuth();
   const { itemCount } = useCartContext();
   const [showCartModal, setShowCartModal] = useState(false);
+  const [navList, setNavList] = useState([]);
 
   const handleOpenModal = () => setShowCartModal(true);
   const handleCloseModal = () => setShowCartModal(false);
+
+  // Filter the nav list based on the logged-in user's role
+  useEffect(() => {
+    if (user) {
+      const filteredNavList = NavList.filter(
+        (navItem) => navItem.role.toLowerCase() === user.role.toLowerCase()
+      );
+      setNavList(filteredNavList);
+    }
+  }, [user]);
+
+  const handelLogout = () => {
+    logout();
+  };
 
   return (
     <>
@@ -28,36 +51,39 @@ const MainNavbar = () => {
         sticky="top"
       >
         <Container>
-          <Navbar.Brand href="#" className="font-weight-bold text-primary">
+          <Navbar.Brand href="/" className="font-weight-bold text-primary">
             E-com
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <Nav.Link href="/vendor/register" className="mx-2">
+              {/* <Nav.Link href="/vendor/register" className="mx-2">
                 Connect With Us
-              </Nav.Link>
+              </Nav.Link> */}
               <Nav.Link href="/" className="mx-2">
                 Product Listing
               </Nav.Link>
               <Nav.Link href="/orders" className="mx-2">
                 Orders
               </Nav.Link>
-              <NavDropdown
-                title="Dashboard"
-                id="basic-nav-dropdown"
-                className="mx-2"
-              >
-                <NavDropdown.Item href="/adminDashboard">
-                  Admin
-                </NavDropdown.Item>
-                <NavDropdown.Item href="/csr">CSR</NavDropdown.Item>
-                <NavDropdown.Item href="/vendor">Vendor</NavDropdown.Item>
-              </NavDropdown>
+              {/* Conditional Dashboard links based on user role */}
+              {navList.length > 0 && (
+                <NavDropdown
+                  title="Dashboard"
+                  id="basic-nav-dropdown"
+                  className="mx-2"
+                >
+                  {navList.map((navItem) => (
+                    <NavDropdown.Item href={navItem.path} key={navItem.path}>
+                      {navItem.label}
+                    </NavDropdown.Item>
+                  ))}
+                </NavDropdown>
+              )}
             </Nav>
 
             <Nav className="align-items-center">
-              <div className="position-relative me-3 d-flex align-items-center">
+              {/* <div className="position-relative me-3 d-flex align-items-center">
                 <ShoppingBag
                   size={24}
                   onClick={handleOpenModal}
@@ -72,7 +98,7 @@ const MainNavbar = () => {
                     {itemCount}
                   </Badge>
                 )}
-              </div>
+              </div> */}
 
               <NavDropdown
                 align="end"
@@ -90,12 +116,22 @@ const MainNavbar = () => {
                 }
                 id="user-nav-dropdown"
               >
-                <NavDropdown.Item
-                  href="/login"
-                  className="d-flex align-items-center"
-                >
-                  <User size={18} className="me-2" /> Login
-                </NavDropdown.Item>
+                {!user ? (
+                  <NavDropdown.Item
+                    href="/login"
+                    className="d-flex align-items-center"
+                  >
+                    <User size={18} className="me-2" /> Login
+                  </NavDropdown.Item>
+                ) : (
+                  <NavDropdown.Item
+                    onClick={() => logout()}
+                    className="d-flex align-items-center"
+                  >
+                    <User size={18} className="me-2" />
+                    Logout
+                  </NavDropdown.Item>
+                )}
                 <NavDropdown.Item
                   href="/register"
                   className="d-flex align-items-center"

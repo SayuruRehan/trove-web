@@ -26,7 +26,8 @@ const UpdateVendor = () => {
         const response = await VendorService.getVendorById(id, {
           signal: abortController.signal,
         });
-        setVendor(response.data);
+        const { password, ...vendor } = response.data;
+        setVendor(vendor);
       } catch (error) {
         if (error === "AbortError") {
           console.log("Fetch aborted!");
@@ -53,6 +54,7 @@ const UpdateVendor = () => {
 
   const updateVendorDetails = async (e) => {
     e.preventDefault();
+
     try {
       await VendorService.updateVendorDetails(id, vendor);
       toast.success("Vendor updated successfully!");
@@ -162,16 +164,6 @@ const UpdateVendor = () => {
                   <option value="inactive">In-active</option>
                 </select>
               </div>
-            </div>
-            <div className="form-group">
-              <label htmlFor="products" className="m-2">
-                Products
-              </label>
-            </div>
-            <div className="form-group">
-              <label htmlFor="feedbacks" className="m-2">
-                Feedbacks
-              </label>
             </div>
             <div className="d-flex align-items-center justify-content-end mt-3">
               <button

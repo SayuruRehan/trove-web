@@ -14,7 +14,7 @@ const AllOrder = () => {
     const [orders, setOrders] = useState([])
     const [filterOrders, setFilterOrders] = useState([])
     const [loading, setLoading] = useState(false)
-
+    console.log(orders)
     //get cancellation orders count
     useEffect(() => {
         setFilterOrders(orders.filter(order => order.status === 'Cancelled'));
@@ -23,7 +23,7 @@ const AllOrder = () => {
     //fetch all orders  
     const fetchOrders = async () => {
         try {
-            const response = await APIService.getAllOrders()
+            const response = await APIService.getOrderWithItems()
             setOrders(response.data)
         } catch (err) {
             console.error('Error fetching orders')
@@ -68,6 +68,16 @@ const AllOrder = () => {
         return `${year}.${month}.${day}`
     }
 
+    //adding thousand seperate
+    function formatNumberWithCommas(number) {
+        // Convert number to string and split it into parts
+        const parts = number.toString().split('.');
+        // Use a regular expression to add commas
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        // Join the parts back together
+        return parts.join('.');
+    }
+
     return (
         <Container className='mt-4'>
             <div className='d-flex align-items-baseline justify-content-between'>
@@ -95,7 +105,7 @@ const AllOrder = () => {
                         orders.length > 0 ? orders.map((order, index) => (
                             <tr key={index}>
                                 <td>{order.orderId}</td>
-                                <td>{order.totalAmount}</td>
+                                <td>{formatNumberWithCommas(order.totalAmount)}</td>
                                 <td>{formateDate(order.createdAt)}</td>
                                 <td>{order.shippingAddress}</td>
                                 <td>

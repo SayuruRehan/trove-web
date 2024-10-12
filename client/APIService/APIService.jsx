@@ -1,45 +1,48 @@
-import axios from "axios";
-import { BASE_URL } from "./BASEUrl";
+import { axiosAPI } from "../api";
 
 class APIService {
   // Order end points
 
   purchaseOrder(orderObj) {
-    return axios.post(`${BASE_URL}/api/order`, orderObj);
+    return axiosAPI.post(`/order`, orderObj);
   }
 
   getAllOrders() {
-    return axios.get(`${BASE_URL}/api/order`);
+    return axiosAPI.get(`/order`);
   }
 
   updateOrderDetails(updateOrderObj, id) {
-    return axios.put(`${BASE_URL}/api/order/${id}`, updateOrderObj);
+    return axiosAPI.put(`/order/${id}`, updateOrderObj);
   }
 
   deleteOrder(id) {
-    return axios.delete(`${BASE_URL}/api/order/${id}`);
+    return axiosAPI.delete(`/order/${id}`);
   }
 
   // Vendor end points
 
   getAllVendors(config = {}) {
-    return axios.get(`${BASE_URL}/api/vendor`, config);
+    return axiosAPI.get(`/vendor`, config);
   }
 
   addVendor() {}
 
   getVendorById() {}
 
-  updateVendor(id,vendorObj){
-    return axios.put(`${BASE_URL}/api/vendor/${id}`, vendorObj);
+  updateVendor(id, vendorObj) {
+    return axiosAPI.put(`/vendor/${id}`, vendorObj);
   }
 
-  getVendorOrders(vendorId){
-    return axios.get(`${BASE_URL}/api/order/vendor/${vendorId}/suborders`)
+  getVendorOrders(vendorId) {
+    return axiosAPI.get(`/order/vendor/${vendorId}/suborders`);
   }
 
-  updateOrderStatus(orderId,orderObj){
-    return axios.put(`${BASE_URL}/api/order/orderitems/${orderId}`,orderObj)
+  updateOrderStatus(orderId, orderObj) {
+    return axiosAPI.put(`/order/orderitems/${orderId}`, orderObj);
+  }
+
+  getOrderWithItems() {
+    return axiosAPI.get(`/order/items`);
   }
 }
 

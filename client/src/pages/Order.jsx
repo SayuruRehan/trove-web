@@ -21,7 +21,7 @@ const Order = () => {
   const [showEdit, setShowEdit] = useState(false)
   const [cancel, setCancel] = useState(false)
 
-  const handleClose = () => setShow(false);
+  const handleClose = () => setShow(false); 
   const handleShow = () => setShow(true);
 
   const handleEditOpen = () => setShowEdit(true)
@@ -89,6 +89,7 @@ const Order = () => {
     }
   }
 
+  //give feedback to vendor
   const giveFeedback = async () => {
     try {
       const response = await APIService.updateVendor()

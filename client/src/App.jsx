@@ -4,15 +4,18 @@ import MainLayout from "./components/layout/MainLayout";
 import AdminLayout from "./components/layout/AdminLayout";
 import CartContextProvider from "./components/providers/ContextProvider";
 import { ToastContainer } from "react-toastify";
+import { AuthProvider } from "./context/authContext";
 
 function App() {
   const [layout, setLayout] = useState(false);
 
   return (
-    <CartContextProvider>
-      <MainLayout />
-      <ToastContainer />
-    </CartContextProvider>
+    <AuthProvider>
+      <CartContextProvider>
+        <MainLayout />
+        <ToastContainer />
+      </CartContextProvider>
+    </AuthProvider>
   );
 }
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import { toast } from "react-toastify";
-import "react-toastify/ReactToastify.css";
+import "react-toastify/dist/ReactToastify.css";
 import VendorService from "../../../APIService/VendorService";
 import l from "../../assets/l.png";
 
@@ -12,6 +12,7 @@ const VendorRegistration = () => {
     vendorPhone: "",
     vendorAddress: "",
     vendorCity: "",
+    hashedPassword: "",
   });
   const [error, setError] = useState(null);
 
@@ -37,6 +38,7 @@ const VendorRegistration = () => {
         vendorPhone: "",
         vendorAddress: "",
         vendorCity: "",
+        hashedPassword: "",
       });
     } catch (error) {
       setError("Error registering...");
@@ -70,10 +72,12 @@ const VendorRegistration = () => {
           </Col>
 
           <Col xs={12} md={12} lg={6}>
-            <h3 className="text-center mb-3">Vendor Registeration</h3>
+            <h3 className="text-center mb-1 text-primary">
+              Vendor Registeration
+            </h3>
             <Form onSubmit={handleSubmit}>
-              <Form.Group className="mb-3" controlId="formVendorName">
-                <Form.Label>First Name</Form.Label>
+              <Form.Group className="mb-2" controlId="formVendorName">
+                <Form.Label>Enter Name</Form.Label>
                 <Form.Control
                   type="text"
                   name="vendorName"
@@ -84,7 +88,7 @@ const VendorRegistration = () => {
                 />
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="formVendorEmail">
+              <Form.Group className="mb-2" controlId="formVendorEmail">
                 <Form.Label>Email address</Form.Label>
                 <Form.Control
                   type="email"
@@ -96,7 +100,7 @@ const VendorRegistration = () => {
                 />
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="formVendorPhone">
+              <Form.Group className="mb-2" controlId="formVendorPhone">
                 <Form.Label>Phone</Form.Label>
                 <Form.Control
                   type="tel"
@@ -108,7 +112,7 @@ const VendorRegistration = () => {
                 />
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="formVendorAddress">
+              <Form.Group className="mb-2" controlId="formVendorAddress">
                 <Form.Label>Address</Form.Label>
                 <Form.Control
                   type="text"
@@ -120,13 +124,25 @@ const VendorRegistration = () => {
                 />
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="formVendorCity">
+              <Form.Group className="mb-2" controlId="formVendorCity">
                 <Form.Label>City</Form.Label>
                 <Form.Control
                   type="text"
                   name="vendorCity"
                   placeholder="Enter city"
                   value={formData.vendorCity}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-2" controlId="formVendorCity">
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  name="hashedPassword"
+                  placeholder="Enter password"
+                  value={formData.hashedPassword}
                   onChange={handleChange}
                   required
                 />

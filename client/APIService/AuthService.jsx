@@ -6,7 +6,7 @@ class AuthServices {
   }
 
   register(userData) {
-    return axiosAPI.get(`/auth/register`, userData);
+    return axiosAPI.post(`/auth/register`, userData);
   }
 }
 

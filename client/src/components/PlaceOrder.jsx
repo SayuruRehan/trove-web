@@ -14,10 +14,15 @@ const PlaceOrder = ({ show, handleClose, totalAmount }) => {
     const [shippingAddress, setShippingAddress] = useState("")
     const [mobileNumber, setMobile] = useState("")
     const [status, setStatus] = useState("Pending")
-    const [userId, setUserId] = useState("65074c59a3e8fa0c12345679")
+    const [userId, setUserId] = useState("")
     const [orderId,setOrderId] = useState()
 
     const { setCartData } = useCartContext()
+    
+    const getUserId = () =>{
+        const user = JSON.parse(localStorage.getItem("user"))
+        setUserId(user.userId)
+    }
     
     //generate random orderId for a order
     function generateOrderId(){
@@ -25,8 +30,10 @@ const PlaceOrder = ({ show, handleClose, totalAmount }) => {
         setOrderId(id)
     }
 
+    //execute when page loads
     useEffect(() => {
         generateOrderId()
+        getUserId()
     },[])
 
     const navigate = useNavigate()
@@ -71,6 +78,7 @@ const PlaceOrder = ({ show, handleClose, totalAmount }) => {
         } else {
             event.preventDefault();
             const orderObj = handleFormData()
+            console.log(orderObj)
             setValidated(true);
             try {
                 const response = await APIService.purchaseOrder(orderObj)

@@ -34,6 +34,17 @@ const AdminDashboard = () => {
             </Card.Body>
           </Card>
         </Link>
+
+        <Link to="/approveVendor">
+          <Card style={{ width: "15rem" }}>
+            <Card.Body className="d-flex justify-content-center align-items-center">
+              <div className="d-flex flex-column justify-content-center align-items-center">
+                <i className="bi bi-box-fill" style={{ fontSize: "2rem" }}></i>
+                <p className="text-center">Unapproved Vendors</p>
+              </div>
+            </Card.Body>
+          </Card>
+        </Link>
       </div>
     </Container>
   );

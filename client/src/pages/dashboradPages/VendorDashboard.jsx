@@ -34,6 +34,20 @@ const vendorDashboard = () => {
             </Card.Body>
           </Card>
         </Link>
+
+        <Link to="/feedbacks">
+          <Card style={{ width: "15rem" }}>
+            <Card.Body className="d-flex justify-content-center align-items-center">
+              <div className="d-flex flex-column justify-content-center align-items-center">
+                <i
+                  class="bi bi-chat-left-text-fill"
+                  style={{ fontSize: "2rem" }}
+                ></i>
+                <p className="text-center">Customer feedbacks</p>
+              </div>
+            </Card.Body>
+          </Card>
+        </Link>
       </div>
     </Container>
   );

@@ -25,7 +25,7 @@ const UpdateOrderModal = ({ show, handleClose, selectedOrder }) => {
 
         setBtnLoading(true)
 
-        let updatedOrderObj = {
+        let updatedOrderObj = { //create updated object
             ...selectedOrder,
             userName,
             shippingAddress,

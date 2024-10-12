@@ -72,7 +72,7 @@ const VendorManagement = () => {
   return (
     <div className="container mt-5">
       <div className="d-flex align-items-center mb-4">
-        <h4 className="text-center">Vendor Management</h4>
+        <h4 className="text-center text-primary">Vendor Management</h4>
       </div>
       <div className="mb-3">
         <input

@@ -1,18 +1,37 @@
 import React, { useState } from "react";
-import { Form, Button, Container, Row, Col, Card } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import {
+  Form,
+  Button,
+  Container,
+  Row,
+  Col,
+  Card,
+  Alert,
+} from "react-bootstrap";
 import VendorService from "../../../APIService/VendorService";
+import k from "../../assets/k.png";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      const response = await VendorService.loginVendor({
+        email,
+        password,
+      });
 
-    const response = await VendorService.login({ email, password });
-
-    if (response.status === 200) {
-      localStorage.setItem("authToken", response.data.token);
+      if (response.status == 200) {
+        navigate(`/vendor`);
+      }
+    } catch (error) {
+      setError(error.response.data);
     }
   };
 
@@ -21,12 +40,36 @@ const LoginForm = () => {
       fluid
       className="d-flex flex-column flex-grow-1 justify-content-center align-items-center bg-light"
     >
-      <Row className="w-100 justify-content-center">
+      <Row className="d-flex justify-content-center">
+        <Col
+          xs={10}
+          md={6}
+          lg={4}
+          className="d-flex justify-content-center align-items-center"
+        >
+          <img
+            src={k}
+            alt="Vendor"
+            className="img-fluid"
+            style={{
+              width: "100%",
+              height: "auto",
+            }}
+          />
+        </Col>
         <Col xs={12} md={6} lg={4}>
-          <h1>Vendor Login</h1>
           <Card className="shadow-lg p-4 rounded">
+            {error && (
+              <Alert
+                variant="danger"
+                onClose={() => setError(null)}
+                dismissible
+              >
+                {error}
+              </Alert>
+            )}
             <Card.Body>
-              <h2 className="text-center text-primary mb-4">Login</h2>
+              <h2 className="text-center text-primary mb-4">Vendor Login</h2>
 
               <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="formBasicEmail" className="mb-3">
@@ -59,15 +102,6 @@ const LoginForm = () => {
                   Log In
                 </Button>
               </Form>
-
-              <div className="text-center mt-3">
-                <p className="text-muted">
-                  Don't have an account?{" "}
-                  <a href="/register" className="text-primary">
-                    Sign up
-                  </a>
-                </p>
-              </div>
             </Card.Body>
           </Card>
         </Col>

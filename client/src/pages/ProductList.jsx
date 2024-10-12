@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useCartContext } from "../components/providers/ContextProvider";
 import ProductCard from "../components/ProductCard";
-import p from "../assets/p.jpg";
 import ProductService from "../../APIService/ProductService";
 
 const ProductList = () => {
@@ -9,13 +8,15 @@ const ProductList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [Products, setProducts] = useState([]);
-  console.log(Products)
+
   const handleSearchInputChange = (e) => {
     const query = e.target.value.toLowerCase();
     setSearchQuery(query);
 
+    const regex = new RegExp(query, "i");
+
     const filtered = Products?.filter((product) =>
-      product.productName.toLowerCase().includes(query)
+      regex.test(product.productName)
     );
     setFilteredProducts(filtered);
   };
@@ -26,10 +27,7 @@ const ProductList = () => {
 
   const fetchAllProducts = async () => {
     const response = await ProductService.getAllProducts();
-    const productsWithDefaultImage = response.data.map((product) => ({
-      ...product,
-    }));
-    setProducts(productsWithDefaultImage);
+    setProducts(response.data);
   };
 
   useEffect(() => {
@@ -41,8 +39,9 @@ const ProductList = () => {
   }, [Products]);
 
   return (
-    <div>
-      <div className="container mt-5">
+    <div className="container-fluid ">
+      <div className="container-fluid mt-5">
+        {/* container-fluid for full width */}
         <div className="row mb-4">
           <div className="col-md-12">
             <input
@@ -55,8 +54,13 @@ const ProductList = () => {
           </div>
         </div>
       </div>
-      <div className="container">
-        <div className="row justify-content-center">
+
+      <div className="container-fluid">
+        {/* container-fluid to ensure full width */}
+        <div
+          className="row justify-content-start w-100"
+          style={{ minHeight: "50vh" }} // Set minimum height to prevent shrinking
+        >
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
               <div
@@ -67,9 +71,9 @@ const ProductList = () => {
               </div>
             ))
           ) : Products.length === 0 ? (
-            <div className="text-center">Loading products...</div>
+            <div className="text-center w-100">Loading products...</div>
           ) : (
-            <div className="text-center">No products found.</div>
+            <div className="text-center w-100">No products found.</div>
           )}
         </div>
       </div>
