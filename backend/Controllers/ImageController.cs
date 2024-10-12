@@ -1,5 +1,6 @@
+// IT21470004 - BOPITIYA S. R. - IMAGE CONTROLLER
+
 using backend.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
@@ -8,13 +9,14 @@ namespace backend.Controllers
     [ApiController]
     public class ImageController : ControllerBase
     {
-    private readonly CloudinaryService _cloudinaryService;
+        private readonly CloudinaryService _cloudinaryService;
 
         public ImageController(CloudinaryService cloudinaryService)
         {
             _cloudinaryService = cloudinaryService;
         }
 
+        // Upload image
         [HttpPost("upload")]
         public async Task<IActionResult> Upload([FromForm] IFormFile file)
         {

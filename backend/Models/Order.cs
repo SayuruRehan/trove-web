@@ -1,11 +1,15 @@
+// IT21470004 - BOPITIYA S. R. - Order Model
+
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDbGenericRepository.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace backend.Models
 {
+    [CollectionName("orders")]
     public class Order
     {
         [BsonId]
@@ -14,12 +18,12 @@ namespace backend.Models
 
         [Required]
         [BsonElement("orderId")]
-        public string orderId { get; set;}
-        
+        public string OrderId { get; set; }  // Changed to PascalCase
+
         [Required]
         [BsonElement("userId")]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string UserId { get; set; }  // Reference to the User
+        public string UserId { get; set; }
 
         [BsonElement("createdAt")]
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
@@ -28,16 +32,16 @@ namespace backend.Models
         [Required]
         [BsonElement("mobileNumber")]
         [Phone(ErrorMessage = "Invalid mobile number format.")]
-        public string MobileNumber { get; set;} 
+        public string MobileNumber { get; set; }
 
         [Required]
         [BsonElement("userName")]
-        public string userName { get; set;} 
-        
+        public string UserName { get; set; }  // Changed to PascalCase
+
         [Required]
         [BsonElement("status")]
         [EnumDataType(typeof(OrderStatus))]
-        public string Status { get; set; } = OrderStatus.Pending.ToString(); // Enforce specific status types
+        public string Status { get; set; } = OrderStatus.Pending.ToString();
 
         [Required]
         [BsonElement("totalAmount")]
@@ -50,24 +54,30 @@ namespace backend.Models
 
         [Required]
         [BsonElement("orderItems")]
-        public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+        public List<string> OrderItemIds { get; set; }
     }
 
+    // Added OrderItem class
+    [CollectionName("orderItems")]
     public class OrderItem
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }  // Added Id property
+
         [Required]
         [BsonElement("productId")]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string ProductId { get; set; }  // Reference to Product
+        public string ProductId { get; set; }
 
         [Required]
         [BsonElement("productName")]
-        public string ProductName { get; set; }  // Denormalized for fast retrieval
+        public string ProductName { get; set; }
 
         [Required]
         [BsonElement("productPrice")]
         [Range(0, Double.MaxValue, ErrorMessage = "Product price must be a positive value.")]
-        public decimal ProductPrice { get; set; }  // Denormalized
+        public decimal ProductPrice { get; set; }
 
         [Required]
         [BsonElement("quantity")]
@@ -77,21 +87,27 @@ namespace backend.Models
         [Required]
         [BsonElement("vendorId")]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string VendorId { get; set; }  // Reference to Vendor
+        public string VendorId { get; set; }
 
         [Required]
         [BsonElement("vendorName")]
-        public string VendorName { get; set; }  // Denormalized for fast retrieval
+        public string VendorName { get; set; }
 
         [Required]
         [BsonElement("fulfillmentStatus")]
         [EnumDataType(typeof(FulfillmentStatusEnum))]
-        public string FulfillmentStatus { get; set; } = FulfillmentStatusEnum.Pending.ToString();  // Track fulfillment status
+        public string FulfillmentStatus { get; set; } = FulfillmentStatusEnum.Pending.ToString();
 
+        [BsonElement("amount")]
+        public decimal Amount { get; set; }  // Changed from double? to decimal for consistency
+        
         [Required]
-        [BsonElement("status")]
-        [EnumDataType(typeof(OrderStatus))]
-        public string Status { get; set; } = OrderStatus.Pending.ToString();
+        [BsonElement("shippingAddress")]
+        public string ShippingAddress { get; set; }
+
+        [BsonElement("createdAt")]
+        [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 
     public enum OrderStatus
@@ -106,6 +122,7 @@ namespace backend.Models
     {
         Pending,
         Delivered,
+        PartiallyDelivered,
         Shipped,
     }
 }

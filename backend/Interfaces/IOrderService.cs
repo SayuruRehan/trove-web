@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - Interface for Order Service
+
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using backend.DTOs;
@@ -11,5 +13,9 @@ namespace backend.Interfaces
         Task<OrderDto> CreateOrderAsync(CreateOrderDto createOrderDto);
         Task<OrderDto> UpdateOrderAsync(UpdateOrderDto updateOrderDto);
         Task DeleteOrderAsync(string id);
+        Task<IEnumerable<OrderItemDto>> GetSubOrdersByVendorIdAsync(string vendorId);
+        Task<OrderItemDto> UpdateOrderItemAsync(UpdateOrderItemDto updateOrderItemDto);
+        Task<IEnumerable<OrderDto>> GetAllOrdersWithItemsAsync();
+
     }
 }

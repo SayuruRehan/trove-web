@@ -1,9 +1,9 @@
+// IT21470004 - BOPITIYA S. R. - Product Service
+
 using backend.DTOs;
 using backend.Interfaces;
 using backend.Models;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+
 
 namespace backend.Services
 {
@@ -29,10 +29,13 @@ namespace backend.Services
                 productDtos.Add(new ProductDto
                 {
                     Id = product.Id,
-                    Name = product.Name,
+                    ProductName = product.ProductName,
                     Description = product.Description,
-                    Price = product.Price,
-                    Stock = product.Stock
+                    ProductPrice = product.ProductPrice,
+                    Stock = product.Stock,
+                    ImageUrl = product.ImageUrl,
+                    VendorId = product.VendorId,
+                    VendorName = product.VendorName
                 });
             }
             return productDtos;
@@ -48,72 +51,162 @@ namespace backend.Services
             return new ProductDto
             {
                 Id = product.Id,
-                Name = product.Name,
+                ProductName = product.ProductName,
                 Description = product.Description,
-                Price = product.Price,
-                Stock = product.Stock
+                ProductPrice = product.ProductPrice,
+                Stock = product.Stock,
+                VendorId = product.VendorId,
+                ImageUrl = product.ImageUrl,
+                VendorName = product.VendorName
             };
         }
 
         // Create a new product
         public async Task<ProductDto> CreateProductAsync(CreateProductDto createProductDto)
         {
-            var uploadResult = await _cloudinaryService.UploadImageAsync(createProductDto.Image);
+            string imageUrl = null;
 
-            if (uploadResult.Error != null)
+            // Only attempt to upload if the image is provided
+            if (createProductDto.Image != null && createProductDto.Image.Length > 0)
             {
-                throw new Exception(uploadResult.Error.Message);
+                var uploadResult = await _cloudinaryService.UploadImageAsync(createProductDto.Image);
+
+                // Handle potential errors from the upload
+                if (uploadResult.Error != null)
+                {
+                    throw new Exception(uploadResult.Error.Message);
+                }
+
+                // Set the secure URL from the uploaded image
+                imageUrl = uploadResult.SecureUrl.ToString();
             }
 
+            // Create the product object
             var product = new Product
             {
-                Name = createProductDto.Name,
+                ProductName = createProductDto.ProductName,
                 Description = createProductDto.Description,
-                Price = createProductDto.Price,
+                ProductPrice = createProductDto.ProductPrice,
                 Stock = createProductDto.Stock,
-                ImageUrl = uploadResult.SecureUrl.ToString()
+                ImageUrl = imageUrl,  // Only set the image URL if an image was uploaded
+                VendorId = createProductDto.VendorId,
+                VendorName = createProductDto.VendorName
             };
 
+            // Save the product in the repository
             var createdProduct = await _productRepository.CreateProductAsync(product);
 
+            // Return the created product as a DTO
             return new ProductDto
             {
                 Id = createdProduct.Id,
-                Name = createdProduct.Name,
+                ProductName = createdProduct.ProductName,
                 Description = createdProduct.Description,
-                Price = createdProduct.Price,
+                ProductPrice = createdProduct.ProductPrice,
                 Stock = createdProduct.Stock,
-                ImageUrl = createdProduct.ImageUrl
-            };
-        }
-
-        // Update an existing product
-        public async Task<ProductDto> UpdateProductAsync(UpdateProductDto updateProductDto)
-        {
-            if (string.IsNullOrEmpty(updateProductDto.Id))
-                throw new ArgumentException("Invalid product ID.");
-
-            var product = new Product
-            {
-                Id = updateProductDto.Id,
-                Name = updateProductDto.Name,
-                Description = updateProductDto.Description,
-                Price = updateProductDto.Price,
-                Stock = updateProductDto.Stock
-            };
-
-            var updatedProduct = await _productRepository.UpdateProductAsync(product);
-            return new ProductDto
-            {
-                Id = updatedProduct.Id,
-                Name = updatedProduct.Name,
-                Description = updatedProduct.Description,
-                Price = updatedProduct.Price,
-                Stock = updatedProduct.Stock
+                ImageUrl = createdProduct.ImageUrl,  // This will be null if no image was uploaded
+                VendorId = createdProduct.VendorId,
+                VendorName = createdProduct.VendorName
             };
         }
 
         // Delete a product by ID
+        public async Task<ProductDto> UpdateProductAsync(string id, UpdateProductDto updateProductDto)
+        {
+            // Check if the product exists
+            var existingProduct = await _productRepository.GetProductByIdAsync(id);
+            if (existingProduct == null)
+            {
+                throw new KeyNotFoundException("Product not found.");
+            }
+
+
+            string imageUrl = existingProduct.ImageUrl;
+
+            if (updateProductDto.Image != null)
+            {
+                // Delete the old image from Cloudinary
+                if (!string.IsNullOrEmpty(existingProduct.ImageUrl))
+                {
+                    var imagePublicId = GetImagePublicId(existingProduct.ImageUrl);  // Extract the public ID from the existing URL
+                    var deleteResult = await _cloudinaryService.DeleteImageAsync(imagePublicId);  // Delete the old image
+                    if (deleteResult.Error != null)
+                    {
+                        throw new Exception("Error deleting old image: " + deleteResult.Error.Message);
+                    }
+                }
+
+                // Upload the new image to Cloudinary
+                var uploadResult = await _cloudinaryService.UploadImageAsync(updateProductDto.Image);
+                if (uploadResult.Error != null)
+                {
+                    throw new Exception(uploadResult.Error.Message);
+                }
+
+                // Update the product with the new image URL
+                imageUrl = uploadResult.SecureUrl.ToString();
+            }
+
+
+            var product = new Product
+            {
+                Id = existingProduct.Id,
+                ProductName = updateProductDto.ProductName ?? existingProduct.ProductName,
+                Description = updateProductDto.Description ?? existingProduct.Description,
+                ProductPrice = updateProductDto.ProductPrice,
+                Stock = updateProductDto.Stock,
+                ImageUrl = imageUrl,
+                VendorId = existingProduct.VendorId,
+                VendorName = existingProduct.VendorName,
+            };
+
+            // Step 4: Update the product in the repository
+            var updatedProduct = await _productRepository.UpdateProductAsync(product);
+
+            // Step 5: Return the updated product DTO
+            return new ProductDto
+            {
+                Id = updatedProduct.Id,
+                ProductName = updatedProduct.ProductName,
+                Description = updatedProduct.Description,
+                ProductPrice = updatedProduct.ProductPrice,
+                Stock = updatedProduct.Stock,
+                ImageUrl = updatedProduct.ImageUrl,
+                VendorId = updatedProduct.VendorId,
+                VendorName = updatedProduct.VendorName
+            };
+        }
+
+
         public Task DeleteProductAsync(string id) => _productRepository.DeleteProductAsync(id);
+
+        // Retrieve products by vendorId
+        public async Task<IEnumerable<ProductDto>> GetProductsByVendorIdAsync(string vendorId)
+        {
+            var products = await _productRepository.GetProductsByVendorIdAsync(vendorId);
+            var productDtos = products.Select(product => new ProductDto
+            {
+                Id = product.Id,
+                ProductName = product.ProductName,
+                Description = product.Description,
+                ProductPrice = product.ProductPrice,
+                Stock = product.Stock,
+                ImageUrl = product.ImageUrl,
+                VendorId = product.VendorId,
+                VendorName = product.VendorName
+            });
+
+            return productDtos;
+        }
+
+        // Extract the public ID from the image URL
+        private static string GetImagePublicId(string imageUrl)
+        {
+            var uri = new Uri(imageUrl);
+            var segments = uri.AbsolutePath.Split('/');
+            var publicIdWithExtension = segments[segments.Length - 1];  // "your-image.jpg"
+            var publicId = Path.GetFileNameWithoutExtension(publicIdWithExtension); // "your-image"
+            return publicId;
+        }
     }
 }

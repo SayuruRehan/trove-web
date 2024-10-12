@@ -1,3 +1,5 @@
+// IT21470004 - BOPITIYA S. R. - Interface for Product Repository
+
 using backend.DTOs;
 using backend.Models;
 using Microsoft.AspNetCore.Identity;
@@ -8,9 +10,9 @@ namespace backend.Interfaces
     {
         Task<IEnumerable<Product>> GetAllProductsAsync();
         Task<Product> GetProductByIdAsync(string id);
-
         Task<Product> UpdateProductAsync(Product updateProductDto);
         Task DeleteProductAsync(string id);
         Task<Product> CreateProductAsync(Product product);
+        Task<IEnumerable<Product>> GetProductsByVendorIdAsync(string venderId);
     }
 }

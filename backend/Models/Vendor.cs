@@ -1,16 +1,18 @@
-using System;
-using AspNetCore.Identity.MongoDbCore.Models;
+// IT21470004 - BOPITIYA S. R. - Vendor model 
+
 using Microsoft.AspNetCore.Identity;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDbGenericRepository.Attributes;
 
-namespace backend.Models{
+namespace backend.Models
+{
 
     [CollectionName("Vendors")]
-    public class Vendor : MongoIdentityUser<Guid>{
+    public class Vendor 
+    {
 
-        // Explicitly say this is the primary key for the MongoDB document
+        //  the primary key for the MongoDB document
         [BsonId] 
         // Tells in MongoDb treat as ObjectId and in application treat as string
         [BsonElement ("_id"), BsonRepresentation(BsonType.ObjectId)]
@@ -25,11 +27,31 @@ namespace backend.Models{
         public string VendorEmail {get; set;}
 
         [PersonalData]
-        public int VendorPhone {get; set;}
+        public string VendorPhone {get; set;}
 
         public string VendorAddress {get; set;}
 
         public string VendorCity {get; set;}
+
+        public bool IsActive {get; set;} = false;
+
+        public string HashedPassword {get; set;}
+
+        public List<string> Products {get; set;} = new List<string>();
+
+        [BsonElement("CustomerFeedback")]
+        public List<CustomerFeedback> Feedbacks {get; set;} = new List<CustomerFeedback>();
+
+        // Implementing Deconstruct method
+        public void Deconstruct(out string id, out string vendorName, out string vendorEmail, out bool isActive)
+        {
+            id = Id;
+            vendorName = VendorName;
+            vendorEmail = VendorEmail;
+            isActive = IsActive;
+        }
     }
 }
+
+
 
