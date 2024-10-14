@@ -13,6 +13,8 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^0.21.4",
     "bootstrap": "^4.6.2",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
     "cors": "^2.8.5",
     "datatables.net": "^2.1.7",
     "datatables.net-bs4": "^2.1.7",
@@ -29,6 +31,8 @@
     "react-spinners": "^0.14.1",
     "react-toastify": "^10.0.5",
     "styled-components": "^6.1.13",
+    "tailwind-merge": "^2.5.4",
+    "tailwindcss-animate": "^1.0.7",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
