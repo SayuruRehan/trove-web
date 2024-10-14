@@ -1,0 +1,44 @@
+.add-product-container {
+  padding: 20px;
+}
+
+.thumbnail-section {
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  position: relative;
+}
+
+.thumbnail-upload {
+  width: 100%;
+  padding: 15px;
+}
+
+.thumbnail-placeholder {
+  display: block;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 50px;
+  cursor: pointer;
+}
+
+.thumbnail-preview {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.categories-section {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.general-section,
+.pricing-section,
+.vendor-section {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
