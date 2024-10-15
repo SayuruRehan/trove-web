@@ -171,8 +171,8 @@ const Inventory = () => {
     <>
       <Header />
       <div className="ml-10 mr-10 mb-10">
-        <div className="flex justify-center">
-          <h2>Inventory</h2>
+          <div className="d-flex justify-content-between align-items-center mb-4">
+            <h2>Inventory</h2>
         </div>
         <Link
           to="/create-inventory"

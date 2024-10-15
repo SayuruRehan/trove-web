@@ -79,70 +79,70 @@ export default function Payment() {
       <>
         <Header />
         <ToastContainer />
-        <div className="container mt-5 mb-5">
-          <div className="d-flex justify-content-between align-items-center mb-4">
-            <h2>Payment List</h2>
-            <CreatePayment onPaymentCreated={handlePaymentCreated} />
-          </div>
+          <div className="ml-10 mr-10 mb-10">
+              <div className="d-flex justify-content-between align-items-center mb-4">
+                  <h2>Payment List</h2>
+                  <CreatePayment onPaymentCreated={handlePaymentCreated}/>
+              </div>
 
-          <table
-              id="paymentTable"
-              className="table table-hover table-bordered shadow-sm"
-              style={{width: "100%"}}
-          >
-            <thead className="bg-gray-100">
-            <tr>
-              <th>Payment ID</th>
-              <th>Payment Reference</th>
-              <th>Amount</th>
-              <th>User ID</th>
-              <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            {payments.length > 0 ? (
-                payments.map((payment) => (
-                    <tr key={payment.paymentId}>
-                      <td>{payment.paymentId}</td>
-                      <td>{payment.paymentReference}</td>
-                      <td>${payment.amount.toFixed(2)}</td>
-                      <td>{payment.userId}</td>
-                      <td className="d-flex justify-content-around">
-                        <EditPayment
-                            payment={payment}
-                            onPaymentUpdated={handlePaymentUpdated}
-                        />
-                        <button
-                            className="text-red-600 hover:text-red-800 transition"
-                            onClick={() => deletePayment(payment.paymentId)}
-                        >
-                          <FontAwesomeIcon icon={faTrash} />
-                        </button>
-                      </td>
-                    </tr>
-                ))
-            ) : (
-                <tr>
-                  <td colSpan="5" className="text-center">
-                    No payments available
-                  </td>
-                </tr>
-            )}
-            </tbody>
-          </table>
-          <div className="d-flex justify-content-center">
-            {loading && (
-                <ClipLoader
-                    color="#000"
-                    loading={loading}
-                    size={150}
-                    aria-label="Loading Spinner"
-                    data-testid="loader"
-                />
-            )}
+              <table
+                  id="paymentTable"
+                  className="table table-hover table-bordered shadow-sm"
+                  style={{width: "100%"}}
+              >
+                  <thead className="bg-gray-100">
+                  <tr>
+                      <th>Payment ID</th>
+                      <th>Payment Reference</th>
+                      <th>Amount</th>
+                      <th>User ID</th>
+                      <th>Actions</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {payments.length > 0 ? (
+                      payments.map((payment) => (
+                          <tr key={payment.paymentId}>
+                              <td>{payment.paymentId}</td>
+                              <td>{payment.paymentReference}</td>
+                              <td>${payment.amount.toFixed(2)}</td>
+                              <td>{payment.userId}</td>
+                              <td className="d-flex justify-content-around">
+                                  <EditPayment
+                                      payment={payment}
+                                      onPaymentUpdated={handlePaymentUpdated}
+                                  />
+                                  <button
+                                      className="text-red-600 hover:text-red-800 transition"
+                                      onClick={() => deletePayment(payment.paymentId)}
+                                  >
+                                      <FontAwesomeIcon icon={faTrash}/>
+                                  </button>
+                              </td>
+                          </tr>
+                      ))
+                  ) : (
+                      <tr>
+                          <td colSpan="5" className="text-center">
+                              No payments available
+                          </td>
+                      </tr>
+                  )}
+                  </tbody>
+              </table>
+              <div className="d-flex justify-content-center">
+                  {loading && (
+                      <ClipLoader
+                          color="#000"
+                          loading={loading}
+                          size={150}
+                          aria-label="Loading Spinner"
+                          data-testid="loader"
+                      />
+                  )}
+              </div>
           </div>
-        </div>
-        <Footer />
+          <Footer/>
       </>
   );
 }

@@ -13,6 +13,7 @@ import axios from "axios";
 import {ToastContainer, toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ClipLoader from "react-spinners/ClipLoader";
+import LoadingSpinner from "../../components/ui/loading-chip";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
@@ -71,43 +72,43 @@ export default function Users() {
 
   return (
       <>
-        <Header />
-        <ToastContainer />
-        <div className="container mx-auto py-8">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-700">User List</h2>
-            <CreateUser onOrderCreated={handleUserCreated} />
-          </div>
+          <Header/>
+          <ToastContainer/>
+          <div className="ml-10 mr-10 mb-10">
+              <div className="d-flex justify-content-between align-items-center mb-4">
+                  <h2>User List</h2>
+                  <CreateUser onOrderCreated={handleUserCreated}/>
+              </div>
 
-          <div className="overflow-x-auto shadow-md rounded-lg">
-            <table
-                id="userTable"
-                className="min-w-full bg-white border border-gray-300"
-            >
-              <thead className="bg-gray-100">
-              <tr>
-                {/*<th className="px-4 py-2 text-left text-gray-600">User ID</th>*/}
-                <th className="px-4 py-2 text-left text-gray-600">Name</th>
-                <th className="px-4 py-2 text-left text-gray-600">Email</th>
-                <th className="px-4 py-2 text-left text-gray-600">Phone Number</th>
-                <th className="px-4 py-2 text-left text-gray-600">Role</th>
-                <th className="px-4 py-2 text-left text-gray-600">Status</th>
-                <th className="px-4 py-2 text-left text-gray-600">Actions</th>
-              </tr>
-              </thead>
-              <tbody>
-              {users.length > 0 ? (
-                  users.map((user) => (
-                      <tr
-                          key={user.userId}
-                          className="border-t hover:bg-gray-50 transition"
-                      >
-                        {/*<td className="px-4 py-2">{user.userId}</td>*/}
-                        <td className="px-4 py-2">{user.username}</td>
-                        <td className="px-4 py-2">{user.email}</td>
-                        <td className="px-4 py-2">{user.phoneNumber}</td>
-                        <td className="px-4 py-2">{user.role}</td>
-                        <td className="px-4 py-2">
+              <div className="overflow-x-auto shadow-md rounded-lg">
+                  <table
+                      id="userTable"
+                      className="min-w-full bg-white border border-gray-300"
+                  >
+                      <thead className="bg-gray-100">
+                      <tr>
+                          {/*<th className="px-4 py-2 text-left text-gray-600">User ID</th>*/}
+                          <th className="px-4 py-2 text-left text-gray-600">Name</th>
+                          <th className="px-4 py-2 text-left text-gray-600">Email</th>
+                          <th className="px-4 py-2 text-left text-gray-600">Phone Number</th>
+                          <th className="px-4 py-2 text-left text-gray-600">Role</th>
+                          <th className="px-4 py-2 text-left text-gray-600">Status</th>
+                          <th className="px-4 py-2 text-left text-gray-600">Actions</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      {users.length > 0 ? (
+                          users.map((user) => (
+                              <tr
+                                  key={user.userId}
+                                  className="border-t hover:bg-gray-50 transition"
+                              >
+                                  {/*<td className="px-4 py-2">{user.userId}</td>*/}
+                                  <td className="px-4 py-2">{user.username}</td>
+                                  <td className="px-4 py-2">{user.email}</td>
+                                  <td className="px-4 py-2">{user.phoneNumber}</td>
+                                  <td className="px-4 py-2">{user.role}</td>
+                                  <td className="px-4 py-2">
                       <span
                           className={`px-2 py-1 rounded-full text-sm font-semibold ${
                               user.status === 0
@@ -127,43 +128,43 @@ export default function Users() {
                                     ? "Hold"
                                     : "Pending"}
                       </span>
-                        </td>
-                        <td className="px-4 py-2 flex space-x-2">
-                          {!(userRole === "CRS" && user.role === "Admin") && (
-                              <>
-                                <EditUser
-                                    user={user}
-                                    onUserUpdated={handleUserUpdated}
-                                />
-                                <button
-                                    className="text-red-600 hover:text-red-800 transition"
-                                    onClick={() => deleteUser(user.userId)}
-                                >
-                                  <FontAwesomeIcon icon={faTrash} />
-                                </button>
-                              </>
-                          )}
-                        </td>
-                      </tr>
-                  ))
-              ) : (
-                  <tr>
-                    <td colSpan="7" className="text-center py-4 text-gray-500">
-                      No data available
-                    </td>
-                  </tr>
-              )}
-              </tbody>
-            </table>
-          </div>
-
-          {loading && (
-              <div className="flex justify-center mt-8">
-                <ClipLoader color="#000" loading={loading} size={150} />
+                                  </td>
+                                  <td className="px-4 py-2 flex space-x-2">
+                                      {!(userRole === "CRS" && user.role === "Admin") && (
+                                          <>
+                                              <EditUser
+                                                  user={user}
+                                                  onUserUpdated={handleUserUpdated}
+                                              />
+                                              <button
+                                                  className="text-red-600 hover:text-red-800 transition"
+                                                  onClick={() => deleteUser(user.userId)}
+                                              >
+                                                  <FontAwesomeIcon icon={faTrash}/>
+                                              </button>
+                                          </>
+                                      )}
+                                  </td>
+                              </tr>
+                          ))
+                      ) : (
+                          <tr>
+                              <td colSpan="7" className="text-center py-4 text-gray-500">
+                                  No data available
+                              </td>
+                          </tr>
+                      )}
+                      </tbody>
+                  </table>
               </div>
-          )}
-        </div>
-        <Footer />
+
+              {loading && (
+                  <div className="flex justify-center mt-8">
+                      {loading ? <LoadingSpinner /> : null}
+                  </div>
+              )}
+          </div>
+          <Footer/>
       </>
   );
 }
