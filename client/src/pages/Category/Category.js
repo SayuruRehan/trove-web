@@ -149,7 +149,7 @@ const Category = () => {
         >
           <FontAwesomeIcon icon={faPlus} /> Create New Category
         </Button>
-        <table className="table table-bordered table-striped">
+        <table className="table table-bordered">
           <thead>
             <tr>
               <th>#</th>
@@ -162,40 +162,44 @@ const Category = () => {
           <tbody>
             {categories.length > 0 ? (
               categories.map((category, index) => (
-                <tr key={category.categoryId}>
-                  <td>{index + 1}</td>
-                  <td>{category.categoryName}</td>
-                  <td>{category.categoryDescription || "No Description"}</td>
-                  <td
-                    style={{
-                      color: category.isActive ? "green" : "red",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {category.isActive ? "Active" : "Inactive"}
-                  </td>
-                  <td>
-                    <button
-                      className="mx-1 btn btn-warning btn-sm"
-                      onClick={() => handleShowModal("edit", category)}
-                    >
-                      <FontAwesomeIcon icon={faEdit} />
-                    </button>
-                    <button
-                      className="mx-1 btn btn-danger btn-sm"
-                      onClick={() => handleShowModal("delete", category)}
-                    >
-                      <FontAwesomeIcon icon={faTrash} />
-                    </button>
-                  </td>
-                </tr>
+                  <tr key={category.categoryId}>
+                    <td>{index + 1}</td>
+                    <td>{category.categoryName}</td>
+                    <td>{category.categoryDescription || "No Description"}</td>
+                    <td>
+  <span
+      className={`px-2 py-1 rounded-full text-sm font-semibold ${
+          category.isActive
+              ? "bg-green-200 text-green-800" // Active
+              : "bg-red-200 text-red-800" // Inactive
+      }`}
+  >
+    {category.isActive ? "Active" : "Inactive"}
+  </span>
+                    </td>
+
+                    <td>
+                      <button
+                          className="mx-1 btn btn-warning btn-sm"
+                          onClick={() => handleShowModal("edit", category)}
+                      >
+                        <FontAwesomeIcon icon={faEdit}/>
+                      </button>
+                      <button
+                          className="mx-1 btn btn-danger btn-sm"
+                          onClick={() => handleShowModal("delete", category)}
+                      >
+                        <FontAwesomeIcon icon={faTrash}/>
+                      </button>
+                    </td>
+                  </tr>
               ))
             ) : (
-              <tr>
-                <td colSpan="5" className="text-center">
-                  No categories available
-                </td>
-              </tr>
+                <tr>
+                  <td colSpan="5" className="text-center">
+                    No categories available
+                  </td>
+                </tr>
             )}
           </tbody>
         </table>

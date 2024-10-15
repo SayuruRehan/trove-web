@@ -86,7 +86,7 @@ export default function Users() {
             >
               <thead className="bg-gray-100">
               <tr>
-                <th className="px-4 py-2 text-left text-gray-600">User ID</th>
+                {/*<th className="px-4 py-2 text-left text-gray-600">User ID</th>*/}
                 <th className="px-4 py-2 text-left text-gray-600">Name</th>
                 <th className="px-4 py-2 text-left text-gray-600">Email</th>
                 <th className="px-4 py-2 text-left text-gray-600">Phone Number</th>
@@ -102,7 +102,7 @@ export default function Users() {
                           key={user.userId}
                           className="border-t hover:bg-gray-50 transition"
                       >
-                        <td className="px-4 py-2">{user.userId}</td>
+                        {/*<td className="px-4 py-2">{user.userId}</td>*/}
                         <td className="px-4 py-2">{user.username}</td>
                         <td className="px-4 py-2">{user.email}</td>
                         <td className="px-4 py-2">{user.phoneNumber}</td>

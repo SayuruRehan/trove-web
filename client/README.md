@@ -1,4 +1,4 @@
-## E-Commerce web-client - EAD
+## Trove web-client - EAD
 
 1.  Run "npm install" backend, frontend, and leading(main) directory separately.
 2.  Create .env file inside the frontend directory and initialize the following values
